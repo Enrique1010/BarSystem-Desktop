@@ -13,6 +13,11 @@ const ProductTable = styled(Table)`
 
 const columns = [
   {
+    title: "Categoría",
+    dataIndex: "category",
+    key: "category",
+  },
+  {
     title: "Nombre",
     dataIndex: "name",
     key: "name",
@@ -24,8 +29,8 @@ const columns = [
   },
   {
     title: "Fecha de Registro",
-    dataIndex: "registryDate",
-    key: "registryDate",
+    dataIndex: "registrationDate",
+    key: "registrationDate",
   },
   {
     title: "Cantidad",
@@ -58,7 +63,7 @@ const ProductComponent = () => {
 
   useEffect(() => {
     ProductsDataService.getAll()
-      .orderBy("clientName", "asc")
+      .orderBy("name", "asc")
       .onSnapshot(onDataChange);
   }, []);
 
