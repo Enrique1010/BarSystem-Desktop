@@ -1,3 +1,4 @@
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { Button, PageHeader, Table } from "antd";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
@@ -11,33 +12,55 @@ const ProductTable = styled(Table)`
   box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.08);
 `;
 
-const columns = [
-  {
-    title: "Categoría",
-    dataIndex: "category",
-    key: "category",
-  },
-  {
-    title: "Nombre",
-    dataIndex: "name",
-    key: "name",
-  },
-  {
-    title: "Precio",
-    dataIndex: "price",
-    key: "price",
-  },
-  {
-    title: "Fecha de Registro",
-    dataIndex: "registrationDate",
-    key: "registrationDate",
-  },
-  {
-    title: "Cantidad",
-    dataIndex: "supply",
-    key: "supply",
-  },
-];
+const AddOrderConfig = {
+  title: "Modificando Producto...",
+  content: <>Aqui hay que modificar la cantidad del producto :)</>,
+};
+
+const columns = (onEdit, onDelete) => {
+ return [
+    {
+      title: "Categoría",
+      dataIndex: "category",
+      key: "category",
+    },
+    {
+      title: "Nombre",
+      dataIndex: "name",
+      key: "name",
+    },
+    {
+      title: "Precio",
+      dataIndex: "price",
+      key: "price",
+    },
+    {
+      title: "Fecha de Registro",
+      dataIndex: "registrationDate",
+      key: "registrationDate",
+    },
+    {
+      title: "Cantidad",
+      dataIndex: "supply",
+      key: "supply",
+    },
+    {
+      title: "Acciones",
+      dataIndex: "",
+      key: "x",
+      render: () => (
+        <>
+          <Button onClick={onEdit} style={{ marginRight: "12px" }}>
+            <EditOutlined />
+          </Button>
+          <Button onClick={onDelete}>
+            <DeleteOutlined />
+          </Button>
+        </>
+      ),
+    },
+  ];
+};
 
 // Build Product Object from firestore collection item
 const buildProductObject = (item) => {
@@ -77,6 +100,14 @@ const ProductComponent = () => {
     setProducts(current);
   };
 
+  const onEdit = () => {
+    console.log("EDITAR");
+  }
+
+  const onDelete = () => {
+    console.log("ELIMINAR");
+  }
+
   return React.useMemo(() => {
     return (
       <CustomLayout>
@@ -92,7 +123,7 @@ const ProductComponent = () => {
           ]}
         ></PageHeader>
         <CustomContent>
-          <ProductTable dataSource={products} columns={columns} />
+          <ProductTable dataSource={products} columns={columns(onEdit, onDelete)} />
         </CustomContent>
       </CustomLayout>
     );

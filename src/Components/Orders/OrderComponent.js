@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Card, message, PageHeader, Result, Steps } from "antd";
+import { Alert, Button, Card, message, PageHeader, Result, Steps } from "antd";
 import { APP_NAME, ORDER_NAME } from "../../DefaultProps";
 import { CustomContent, CustomLayout } from "../navigation/AppLayout";
 import styled from "styled-components";
@@ -37,6 +37,21 @@ const OrderCard = styled(Card)`
       max-width: calc(25% - 1em);
     }
   }
+`;
+
+const SplitterWrapper = styled.div`
+  display: grid;
+  grid-template-columns: auto auto;
+`;
+
+const OrderElementsWrapper = styled.div`
+  text-align: left;
+  justify-content: space-evenly;
+`;
+
+const StateAlert = styled(Alert)`
+  width: 170px;
+  margin-bottom: 12px;
 `;
 
 // Build Order Object from firestore collection item
@@ -107,20 +122,25 @@ const OrderComponent = () => {
               key={order.id}
               title={order.clientName + " | Orden #" + index + 1}
             >
-              <div>
-                <p>Monto: {order.costAmount}</p>
-                <p>Fecha: {order.date}</p>
-              </div>
-              {order.currentState ? (
-                <Result status="success" title="Completado" />
-              ) : (
-                <>
-                  <Result status="warning" title="Pendiente" />
-                  <Button type="primary" onClick={() => nextState(order)}>
-                    Completar
-                  </Button>
-                </>
-              )}
+              <SplitterWrapper>
+                <OrderElementsWrapper style={{marginRight: '20px'}}>
+                  <p>Cantidad: {order.amount}</p>
+                  <p>Mesa: {order.table}</p>
+                  <p>Fecha: {order.date}</p>
+                </OrderElementsWrapper>
+                <OrderElementsWrapper>
+                  {order.currentState ? (
+                    <StateAlert message="Completado" type="success" showIcon />
+                  ) : (
+                    <>
+                      <StateAlert message="Pendiente" type="warning" showIcon />
+                      <Button type="primary" onClick={() => nextState(order)}>
+                        Completar
+                      </Button>
+                    </>
+                  )}
+                </OrderElementsWrapper>
+              </SplitterWrapper>
             </OrderCard>
           ))}
         </OrderCardWrapper>
