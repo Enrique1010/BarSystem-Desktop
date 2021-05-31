@@ -2,9 +2,11 @@ import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { Button, InputNumber, PageHeader, Table } from "antd";
 import Modal from "antd/lib/modal/Modal";
 import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router";
 import styled from "styled-components";
 import { APP_NAME, INVENTORY_NAME } from "../../DefaultProps";
 import { CustomContent, CustomLayout } from "../navigation/AppLayout";
+import { ROUTE_ADD_PRODUCT } from "../navigation/Routes";
 import ProductsDataService from "../services/Products.service";
 
 const ProductTable = styled(Table)`
@@ -71,9 +73,10 @@ const ProductComponent = () => {
   const [editingElement, setEditingElement] = useState(undefined);
   const [newSupply, setNewSupply] = useState(0);
   const [modal, contextHolder] = Modal.useModal();
+  const history = useHistory();
 
   const tableColumns = () => {
-    var cols = columns;
+    let cols = columns;
     cols.push({
       title: "Acciones",
       dataIndex: "",
@@ -111,7 +114,12 @@ const ProductComponent = () => {
             onChange={setNewSupply}
             style={{ marginRight: "10px" }}
           />
-          <Button onClick={() => updateCurrentElementSupply} disabled={!newSupply < 0}>Agregar</Button>
+          <Button
+            onClick={() => updateCurrentElementSupply}
+            disabled={!newSupply < 0}
+          >
+            Agregar
+          </Button>
         </div>
       ),
     };
@@ -170,6 +178,10 @@ const ProductComponent = () => {
     console.log("ELIMINAR", key);
   };
 
+  const createProduct = () => {
+    history.push(ROUTE_ADD_PRODUCT);
+  };
+
   return React.useMemo(() => {
     return (
       <CustomLayout>
@@ -179,7 +191,7 @@ const ProductComponent = () => {
           subTitle={INVENTORY_NAME}
           extra={[
             <Button key="2">Exportar</Button>,
-            <Button key="1" type="primary">
+            <Button key="1" type="primary" onClick={createProduct}>
               Nuevo Producto
             </Button>,
           ]}

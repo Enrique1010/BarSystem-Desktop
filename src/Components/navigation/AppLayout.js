@@ -7,6 +7,7 @@ import CustomSidebar from "./CustomSidebar";
 import mainLogo from "../../logo.jpg";
 import { Route, Switch } from "react-router-dom";
 import {
+  ROUTE_ADD_PRODUCT,
   ROUTE_INVENTORY,
   ROUTE_ORDERS,
   ROUTE_ORDERS_ACTIVE,
@@ -15,6 +16,7 @@ import {
 } from "./Routes";
 import ProductComponent from "../Products/ProductComponent";
 import styled from "styled-components";
+import ProductForm from "../Products/ProductForm";
 
 const AppLayout = () => {
   return (
@@ -46,6 +48,9 @@ const AppLayout = () => {
         {/* OTHERS */}
         <Route exact path={ROUTE_INVENTORY}>
           <ProductComponent />
+        </Route>
+        <Route exact path={ROUTE_ADD_PRODUCT}>
+          <ProductForm />
         </Route>
       </Switch>
     </Layout>

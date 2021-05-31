@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Alert, Button, Card, message, PageHeader, Result, Steps } from "antd";
+import { Alert, Button, Card, message, PageHeader } from "antd";
 import { APP_NAME, ORDER_NAME } from "../../DefaultProps";
 import { CustomContent, CustomLayout } from "../navigation/AppLayout";
 import styled from "styled-components";
@@ -57,7 +57,7 @@ const StateAlert = styled(Alert)`
 // Build Order Object from firestore collection item
 const buildOrderObject = (item) => {
   let data = item.data();
-  console.log(data);
+  console.log('DATA->:', data);
   return {
     id: item.id,
     amount: data.amount,
@@ -87,6 +87,7 @@ const OrderComponent = () => {
       let val = buildOrderObject(item);
       currentOrders.push(val);
     });
+    console.log(currentOrders);
     setOrders(currentOrders);
   };
 
