@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Alert, Button, Card, message, PageHeader } from "antd";
+import { Alert, Button, Card, Collapse, message, PageHeader } from "antd";
 import { APP_NAME, ORDER_NAME } from "../../DefaultProps";
 import { CustomContent, CustomLayout } from "../navigation/AppLayout";
 import styled from "styled-components";
@@ -7,6 +7,8 @@ import OrdersDataService from "../services/Orders.service";
 
 const DONE_STATE = true;
 const PENDING_STATE = false;
+
+const { Panel } = Collapse;
 
 const OrderCardWrapper = styled.div`
   width: 100%;
@@ -57,14 +59,14 @@ const StateAlert = styled(Alert)`
 // Build Order Object from firestore collection item
 const buildOrderObject = (item) => {
   let data = item.data();
-  console.log('DATA->:', data);
+  console.log("DATA->:", data);
   return {
     id: item.id,
     amount: data.amount,
     clientName: data.clientName,
     currentState: data.currentState,
     date: data.date,
-    product: data.product,
+    products: data.products,
     table: data.table,
   };
 };
@@ -73,9 +75,7 @@ const OrderComponent = () => {
 
   useEffect(() => {
     // Retrieve Orders data from firebase colletion
-    OrdersDataService.getAll()
-      .orderBy("clientName", "asc")
-      .onSnapshot(onDataChange);
+    OrdersDataService.getAll().orderBy("date", "desc").onSnapshot(onDataChange);
   }, []);
 
   const onDataChange = (items) => {
@@ -121,10 +121,10 @@ const OrderComponent = () => {
           {orders.map((order, index) => (
             <OrderCard
               key={order.id}
-              title={order.clientName + " | Orden #" + index + 1}
+              title={"Orden de: " + order.clientName}
             >
               <SplitterWrapper>
-                <OrderElementsWrapper style={{marginRight: '20px'}}>
+                <OrderElementsWrapper style={{ marginRight: "20px" }}>
                   <p>Cantidad: {order.amount}</p>
                   <p>Mesa: {order.table}</p>
                   <p>Fecha: {order.date}</p>
@@ -135,13 +135,26 @@ const OrderComponent = () => {
                   ) : (
                     <>
                       <StateAlert message="Pendiente" type="warning" showIcon />
-                      <Button type="primary" onClick={() => nextState(order)}>
+                      {/* Required functionality */}
+                      <Button type="danger" onClick={console.log(":D")}>
+                        Cancelar
+                      </Button>
+                      <Button style={{margin: "0px 8px"}} type="primary" onClick={() => nextState(order)}>
                         Completar
                       </Button>
                     </>
                   )}
                 </OrderElementsWrapper>
               </SplitterWrapper>
+              <Collapse defaultActiveKey={["0"]}>
+                <Panel header="Pedidos" key="1">
+                  {order.products.map((prod, index) => (
+                    <p>
+                      {index}: {prod}
+                    </p>
+                  ))}
+                </Panel>
+              </Collapse>
             </OrderCard>
           ))}
         </OrderCardWrapper>

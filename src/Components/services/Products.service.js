@@ -20,4 +20,20 @@ class ProductsDataService {
   }
 }
 
+export const buildProduct = values => {
+  return {
+    id: values.id,
+    name: values.name,
+    productCode: values.productCode,
+    category: values.category,
+    price: values.price,
+    supply: values.supply,
+    lastAddedSupply: values.lastAddedSupply,
+    olderSupply: values.olderSupply,
+    quantitySold: values.quantitySold,
+    dailySales: values.dailySales,
+    registrationDate: values.registrationDate,
+    lastRegistrationDate: values.lastRegistrationDate,
+  };
+}
 export default new ProductsDataService();
