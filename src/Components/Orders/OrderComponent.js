@@ -4,6 +4,7 @@ import { APP_NAME, ORDER_NAME } from "../../DefaultProps";
 import { CustomContent, CustomLayout } from "../navigation/AppLayout";
 import styled from "styled-components";
 import OrdersDataService from "../services/Orders.service";
+import Text from "antd/lib/typography/Text";
 
 const DONE_STATE = true;
 const PENDING_STATE = false;
@@ -68,6 +69,8 @@ const buildOrderObject = (item) => {
     date: data.date,
     products: data.products,
     table: data.table,
+    cup: data.cup,
+    ice: data.ice,
   };
 };
 const OrderComponent = () => {
@@ -149,9 +152,11 @@ const OrderComponent = () => {
               <Collapse defaultActiveKey={["0"]}>
                 <Panel header="Pedidos" key="1">
                   {order.products.map((prod, index) => (
-                    <p>
-                      {index}: {prod}
-                    </p>
+                      <p>
+                      <Text>{index + 1}- {prod.name} </Text>
+                      <Text type="success">${prod.price}</Text>
+                      <Text> x{prod.amount}</Text>
+                      </p>
                   ))}
                 </Panel>
               </Collapse>
