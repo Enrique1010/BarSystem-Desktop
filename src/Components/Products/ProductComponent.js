@@ -1,5 +1,5 @@
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { Button, InputNumber, PageHeader, Table } from "antd";
+import { message, Button, InputNumber, PageHeader, Table } from "antd";
 import Modal from "antd/lib/modal/Modal";
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router";
@@ -73,11 +73,11 @@ const ProductComponent = () => {
   const [editingElement, setEditingElement] = useState(undefined);
   const [newSupply, setNewSupply] = useState(0);
   const [modal, contextHolder] = Modal.useModal();
+  const [messageHolder, messageContexHolder] = message.useMessage();
   const history = useHistory();
 
   const tableColumns = () => {
-    let cols = columns;
-    cols.push({
+    let cols = [...columns, {
       title: "Acciones",
       dataIndex: "",
       key: "x",
@@ -94,17 +94,17 @@ const ProductComponent = () => {
           </Button>
         </>
       ),
-    });
+    }];
     return cols;
   };
 
-  const AddProductConfig = () => {
-    console.log(editingElement);
+  const AddProductConfig = (e) => {
+    console.log(e);
     return {
       title: "Agregando Producto...",
       content: (
         <div>
-          <p>Suministro Actual: {editingElement.supply}</p>
+          <p>Suministro Actual: {e.supply}</p>
           <br />
           <p>Nuevo Suministro: </p>
           <InputNumber
@@ -115,7 +115,7 @@ const ProductComponent = () => {
             style={{ marginRight: "10px" }}
           />
           <Button
-            onClick={() => updateCurrentElementSupply}
+            onClick={() => updateCurrentElementSupply(e)}
             disabled={!newSupply < 0}
           >
             Agregar
@@ -129,20 +129,6 @@ const ProductComponent = () => {
     ProductsDataService.getAll()
       .orderBy("name", "asc")
       .onSnapshot(onDataChange);
-
-    // let pr = {
-    // name: "Presidente",
-    // productCode: "5012",
-    // category: "Cerveza",
-    // price: 300,
-    // supply: 40,
-    // lastAddedSupply: 0,
-    // olderSupply: 0,
-    // quantitySold: 0,
-    // dailySales: 0,
-    // registrationDate: "4/7/2021",
-    // lastRegistrationDate: "4/7/2021",}
-    // ProductsDataService.create(pr);
   }, []);
 
   const onDataChange = (items) => {
@@ -155,54 +141,61 @@ const ProductComponent = () => {
     setProducts(current);
   };
 
-  const showEditModal = () => {
-    modal.info(AddProductConfig());
+  const showEditModal = (e) => {
+    modal.info(AddProductConfig(e));
   };
 
-  const updateCurrentElementSupply = () => {
-    let newElement = editingElement;
+  const updateCurrentElementSupply = (e) => {
+    let newElement = e;
     newElement["newSupply"] = newSupply;
     newElement["olderSupply"] = newElement.supply;
     newElement["supply"] = newElement.supply + newSupply;
     ProductsDataService.update(newElement.id, newElement);
+    showUpdateInfo(newElement.name, newSupply);
     modal.destroy();
   };
 
   const onEdit = (element) => {
+    console.log("ELEMENTL:::", element);
     setEditingElement(element);
-    showEditModal();
+    showEditModal(element);
   };
 
   const onDelete = (key) => {
     ProductsDataService.delete(key);
-    console.log("ELIMINAR", key);
   };
 
   const createProduct = () => {
     history.push(ROUTE_ADD_PRODUCT);
   };
 
-  return React.useMemo(() => {
-    return (
-      <CustomLayout>
-        <PageHeader
-          ghost={false}
-          title={APP_NAME}
-          subTitle={INVENTORY_NAME}
-          extra={[
-            <Button key="2">Exportar</Button>,
-            <Button key="1" type="primary" onClick={createProduct}>
-              Nuevo Producto
-            </Button>,
-          ]}
-        ></PageHeader>
-        <CustomContent>
-          <ProductTable dataSource={products} columns={tableColumns()} />
-        </CustomContent>
-        {contextHolder}
-      </CustomLayout>
-    );
-  }, [products, editingElement]);
+  const showUpdateInfo = (name, supply) => {
+    messageHolder .open({
+      type: 'info',
+      content: `Producto: ${name} se agregó un suministro de ${supply}`,
+      duration: 3,
+    });
+  };
+
+  return (
+    <CustomLayout>
+      <PageHeader
+        ghost={false}
+        title={APP_NAME}
+        subTitle={INVENTORY_NAME}
+        extra={[
+          <Button key="2">Exportar</Button>,
+          <Button key="1" type="primary" onClick={createProduct}>
+            Nuevo Producto
+          </Button>,
+        ]}
+      ></PageHeader>
+      <CustomContent>
+        <ProductTable dataSource={products} columns={tableColumns()} />
+      </CustomContent>
+      {contextHolder}
+    </CustomLayout>
+  );
 };
 
 export default ProductComponent;

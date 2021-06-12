@@ -63,14 +63,15 @@ const buildOrderObject = (item) => {
   console.log("DATA->:", data);
   return {
     id: item.id,
-    amount: data.amount,
     clientName: data.clientName,
     currentState: data.currentState,
     date: data.date,
     products: data.products,
     table: data.table,
-    cup: data.cup,
+    cups: data.cups,
     ice: data.ice,
+    uid: data.uid,
+    waiterName: data.waiterName,
   };
 };
 const OrderComponent = () => {
@@ -82,7 +83,6 @@ const OrderComponent = () => {
   }, []);
 
   const onDataChange = (items) => {
-    console.log(items);
     let currentOrders = [];
 
     items.forEach((item) => {
@@ -97,6 +97,10 @@ const OrderComponent = () => {
   const updateOrder = async (order) => {
     OrdersDataService.update(order.id, order);
   };
+  
+  const cancelOrder = async (order) => {
+    OrdersDataService.delete(order.id);
+  };
 
   const nextState = (order) => {
     if (order.currentState === PENDING_STATE) {
@@ -107,6 +111,9 @@ const OrderComponent = () => {
     }
   };
 
+  const expExcel = () => {
+  }
+
   return (
     <CustomLayout>
       <PageHeader
@@ -114,7 +121,7 @@ const OrderComponent = () => {
         title={APP_NAME}
         subTitle={ORDER_NAME}
         extra={[
-          <Button key="1" type="primary">
+          <Button key="1" type="primary" onClick={() => expExcel()}>
             Nueva Orden
           </Button>,
         ]}
@@ -131,6 +138,7 @@ const OrderComponent = () => {
                   <p>Cantidad: {order.amount}</p>
                   <p>Mesa: {order.table}</p>
                   <p>Fecha: {order.date}</p>
+                  <p><Text type="success">U: {order.waiterName}</Text></p>
                 </OrderElementsWrapper>
                 <OrderElementsWrapper>
                   {order.currentState ? (
@@ -139,7 +147,7 @@ const OrderComponent = () => {
                     <>
                       <StateAlert message="Pendiente" type="warning" showIcon />
                       {/* Required functionality */}
-                      <Button type="danger" onClick={console.log(":D")}>
+                      <Button type="danger" onClick={() => cancelOrder(order)}>
                         Cancelar
                       </Button>
                       <Button style={{margin: "0px 8px"}} type="primary" onClick={() => nextState(order)}>
