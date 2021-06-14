@@ -1,5 +1,5 @@
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { message, Button, InputNumber, PageHeader, Table } from "antd";
+import { Popconfirm, message, Button, InputNumber, PageHeader, Table } from "antd";
 import Modal from "antd/lib/modal/Modal";
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router";
@@ -77,24 +77,36 @@ const ProductComponent = () => {
   const history = useHistory();
 
   const tableColumns = () => {
-    let cols = [...columns, {
-      title: "Acciones",
-      dataIndex: "",
-      key: "x",
-      render: (record) => (
-        <>
-          <Button
-            onClick={() => onEdit(record)}
-            style={{ marginRight: "12px" }}
-          >
-            <EditOutlined />
-          </Button>
-          <Button onClick={() => onDelete(record.id)}>
-            <DeleteOutlined />
-          </Button>
-        </>
-      ),
-    }];
+    let cols = [
+      ...columns,
+      {
+        title: "Acciones",
+        dataIndex: "",
+        key: "x",
+        render: (record) => (
+          <>
+            <Button
+              onClick={() => onEdit(record)}
+              style={{ marginRight: "12px" }}
+            >
+              <EditOutlined />
+            </Button>
+
+            <Popconfirm
+              placement="top"
+              title={"¿Desea cancelar esta Orden?"}
+              onConfirm={() => onDelete(record.id)}
+              okText="Si"
+              cancelText="No"
+            >
+              <Button>
+                <DeleteOutlined />
+              </Button>
+            </Popconfirm>
+          </>
+        ),
+      },
+    ];
     return cols;
   };
 
@@ -170,8 +182,8 @@ const ProductComponent = () => {
   };
 
   const showUpdateInfo = (name, supply) => {
-    messageHolder .open({
-      type: 'info',
+    messageHolder.open({
+      type: "info",
       content: `Producto: ${name} se agregó un suministro de ${supply}`,
       duration: 3,
     });

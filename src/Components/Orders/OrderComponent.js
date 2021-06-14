@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Alert, Button, Card, Collapse, message, PageHeader } from "antd";
+import { Popconfirm, Alert, Button, Card, Collapse, message, PageHeader } from "antd";
 import { APP_NAME, ORDER_NAME } from "../../DefaultProps";
 import { CustomContent, CustomLayout } from "../navigation/AppLayout";
 import styled from "styled-components";
@@ -97,7 +97,7 @@ const OrderComponent = () => {
   const updateOrder = async (order) => {
     OrdersDataService.update(order.id, order);
   };
-  
+
   const cancelOrder = async (order) => {
     OrdersDataService.delete(order.id);
   };
@@ -111,8 +111,7 @@ const OrderComponent = () => {
     }
   };
 
-  const expExcel = () => {
-  }
+  const expExcel = () => {};
 
   return (
     <CustomLayout>
@@ -129,16 +128,15 @@ const OrderComponent = () => {
       <CustomContent>
         <OrderCardWrapper>
           {orders.map((order, index) => (
-            <OrderCard
-              key={order.id}
-              title={"Orden de: " + order.clientName}
-            >
+            <OrderCard key={order.id} title={"Orden de: " + order.clientName}>
               <SplitterWrapper>
                 <OrderElementsWrapper style={{ marginRight: "20px" }}>
                   <p>Cantidad: {order.amount}</p>
                   <p>Mesa: {order.table}</p>
                   <p>Fecha: {order.date}</p>
-                  <p><Text type="success">U: {order.waiterName}</Text></p>
+                  <p>
+                    <Text type="success">U: {order.waiterName}</Text>
+                  </p>
                 </OrderElementsWrapper>
                 <OrderElementsWrapper>
                   {order.currentState ? (
@@ -147,10 +145,21 @@ const OrderComponent = () => {
                     <>
                       <StateAlert message="Pendiente" type="warning" showIcon />
                       {/* Required functionality */}
-                      <Button type="danger" onClick={() => cancelOrder(order)}>
-                        Cancelar
-                      </Button>
-                      <Button style={{margin: "0px 8px"}} type="primary" onClick={() => nextState(order)}>
+
+                      <Popconfirm
+                        placement="top"
+                        title={"¿Desea cancelar esta Orden?"}
+                        onConfirm={() => cancelOrder(order)}
+                        okText="Si"
+                        cancelText="No"
+                      >
+                        <Button type="danger">Cancelar</Button>
+                      </Popconfirm>
+                      <Button
+                        style={{ margin: "0px 8px" }}
+                        type="primary"
+                        onClick={() => nextState(order)}
+                      >
                         Completar
                       </Button>
                     </>
@@ -160,11 +169,13 @@ const OrderComponent = () => {
               <Collapse defaultActiveKey={["0"]}>
                 <Panel header="Pedidos" key="1">
                   {order.products.map((prod, index) => (
-                      <p>
-                      <Text>{index + 1}- {prod.name} </Text>
+                    <p>
+                      <Text>
+                        {index + 1}- {prod.name}{" "}
+                      </Text>
                       <Text type="success">${prod.price}</Text>
                       <Text> x{prod.amount}</Text>
-                      </p>
+                    </p>
                   ))}
                 </Panel>
               </Collapse>
