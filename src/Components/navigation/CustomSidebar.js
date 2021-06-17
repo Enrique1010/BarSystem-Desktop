@@ -7,8 +7,8 @@ import {
 import { Menu } from "antd";
 import styled from "styled-components";
 import { useHistory } from "react-router-dom";
-import { ROUTE_ORDERS, ROUTE_INVENTORY } from "./Routes";
-import { INVENTORY_NAME, ORDER_NAME } from "../../DefaultProps";
+import { ROUTE_ORDERS, ROUTE_INVENTORY, ROUTE_ORDERS_DONE } from "./Routes";
+import { INVENTORY_NAME, ORDER_NAME, ORDER_NAME_DONE } from "../../DefaultProps";
 
 const CustomSidebar = () => {
   // const [collapsed, setCollapsed] = useState(false);
@@ -37,14 +37,22 @@ const CustomSidebar = () => {
       >
         {ORDER_NAME}
       </Menu.Item>
+      
       <Menu.Item
         key="2"
+        icon={<PieChartOutlined />}
+        onClick={() => handleClick(ROUTE_ORDERS_DONE)}
+      >
+        {ORDER_NAME_DONE}
+      </Menu.Item>
+      <Menu.Item
+        key="3"
         icon={<DesktopOutlined />}
         onClick={() => handleClick(ROUTE_INVENTORY)}
       >
         {INVENTORY_NAME}
       </Menu.Item>
-      <Menu.Item key="3" icon={<ContainerOutlined />}>
+      <Menu.Item key="4" icon={<ContainerOutlined />}>
         Salir
       </Menu.Item>
     </StyledMenu>

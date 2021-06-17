@@ -10,14 +10,13 @@ import {
   ROUTE_ADD_PRODUCT,
   ROUTE_INVENTORY,
   ROUTE_ORDERS,
-  ROUTE_ORDERS_ACTIVE,
   ROUTE_ORDERS_DONE,
-  ROUTE_ORDERS_PENDING,
 } from "./Routes";
 import ProductComponent from "../Products/ProductComponent";
 import styled from "styled-components";
 import ProductForm from "../Products/ProductForm";
 import Store from "../../commonStore";
+import OrderList from "../Orders/OrderList";
 
 const AppLayout = () => {
   return (
@@ -38,14 +37,8 @@ const AppLayout = () => {
           <Route exact path={ROUTE_ORDERS}>
             <OrderComponent filtered={"all"} />
           </Route>
-          <Route exact path={ROUTE_ORDERS_ACTIVE}>
-            <OrderComponent filtered={"active"} />
-          </Route>
-          <Route exact path={ROUTE_ORDERS_PENDING}>
-            <OrderComponent filtered={"pending"} />
-          </Route>
           <Route exact path={ROUTE_ORDERS_DONE}>
-            <OrderComponent filtered={"done"} />
+            <OrderList />
           </Route>
           {/* OTHERS */}
           <Route exact path={ROUTE_INVENTORY}>

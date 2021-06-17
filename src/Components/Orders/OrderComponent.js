@@ -57,23 +57,6 @@ const StateAlert = styled(Alert)`
   margin-bottom: 12px;
 `;
 
-// Build Order Object from firestore collection item
-const buildOrderObject = (item) => {
-  let data = item.data();
-  console.log("DATA->:", data);
-  return {
-    id: item.id,
-    clientName: data.clientName,
-    currentState: data.currentState,
-    date: data.date,
-    products: data.products,
-    table: data.table,
-    cups: data.cups,
-    ice: data.ice,
-    uid: data.uid,
-    waiterName: data.waiterName,
-  };
-};
 const OrderComponent = () => {
   const [orders, setOrders] = useState([]);
 
@@ -111,19 +94,12 @@ const OrderComponent = () => {
     }
   };
 
-  const expExcel = () => {};
-
   return (
     <CustomLayout>
       <PageHeader
         ghost={false}
         title={APP_NAME}
         subTitle={ORDER_NAME}
-        extra={[
-          <Button key="1" type="primary" onClick={() => expExcel()}>
-            Nueva Orden
-          </Button>,
-        ]}
       ></PageHeader>
       <CustomContent>
         <OrderCardWrapper>
@@ -187,4 +163,37 @@ const OrderComponent = () => {
   );
 };
 
+// Build Order Object from firestore collection item
+export const buildOrderObject = (item) => {
+  let data = item.data();
+  return {
+    id: item.id,
+    clientName: data.clientName,
+    currentState: data.currentState,
+    date: data.date,
+    products: data.products,
+    table: data.table,
+    cups: data.cups,
+    ice: data.ice,
+    uid: data.uid,
+    waiterName: data.waiterName,
+  };
+};
+
+export const buildOrderObjectWithProductFormatted = (item) => {
+  let data = item.data();
+  let newDate = new Date(data.date).toLocaleDateString();
+  return {
+    id: item.id,
+    clientName: data.clientName,
+    currentState: data.currentState,
+    date: newDate,
+    products: data.products.length,
+    table: data.table,
+    cups: data.cups,
+    ice: data.ice,
+    uid: data.uid,
+    waiterName: data.waiterName,
+  };
+};
 export default OrderComponent;

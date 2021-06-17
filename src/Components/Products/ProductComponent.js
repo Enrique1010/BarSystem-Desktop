@@ -9,7 +9,7 @@ import { CustomContent, CustomLayout } from "../navigation/AppLayout";
 import { ROUTE_ADD_PRODUCT } from "../navigation/Routes";
 import ProductsDataService from "../services/Products.service";
 
-const ProductTable = styled(Table)`
+export const PTable = styled(Table)`
   padding: 20px;
   margin: 20px;
   box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.08);
@@ -70,7 +70,6 @@ const buildProductObject = (item) => {
 
 const ProductComponent = () => {
   const [products, setProducts] = useState([]);
-  const [editingElement, setEditingElement] = useState(undefined);
   const [newSupply, setNewSupply] = useState(0);
   const [modal, contextHolder] = Modal.useModal();
   const [messageHolder, messageContexHolder] = message.useMessage();
@@ -168,8 +167,6 @@ const ProductComponent = () => {
   };
 
   const onEdit = (element) => {
-    console.log("ELEMENTL:::", element);
-    setEditingElement(element);
     showEditModal(element);
   };
 
@@ -203,7 +200,7 @@ const ProductComponent = () => {
         ]}
       ></PageHeader>
       <CustomContent>
-        <ProductTable dataSource={products} columns={tableColumns()} />
+        <PTable dataSource={products} columns={tableColumns()} />
       </CustomContent>
       {contextHolder}
     </CustomLayout>
