@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Popconfirm, Alert, Button, Card, Collapse, message, PageHeader } from "antd";
+import {
+  Popconfirm,
+  Alert,
+  Button,
+  Card,
+  Collapse,
+  message,
+  PageHeader,
+} from "antd";
 import { APP_NAME, ORDER_NAME } from "../../DefaultProps";
 import { CustomContent, CustomLayout } from "../navigation/AppLayout";
 import styled from "styled-components";
@@ -94,6 +102,30 @@ const OrderComponent = () => {
     }
   };
 
+  const print_content = (
+    <div>
+      <table cellPadding={0} cellSpacing={0} className="t0">
+        <tbody>
+          <tr>..............</tr>
+          <tr>..INVOICE #1..</tr>
+          <tr>..............</tr>
+          <tr>..............</tr>
+          <tr>..............</tr>
+          <tr>..............</tr>
+        </tbody>
+      </table>
+    </div>
+  );
+
+  const openFrame = (print_c) => {
+    var pri = document.getElementById("ifmcontentstoprint").contentWindow;
+    pri.document.open();
+    pri.document.write(print_content);
+    pri.document.close();
+    pri.focus();
+    pri.print();
+  };
+
   return (
     <CustomLayout>
       <PageHeader
@@ -157,6 +189,27 @@ const OrderComponent = () => {
               </Collapse>
             </OrderCard>
           ))}
+
+          <iframe
+            id="ifmcontentstoprint"
+            style={{ height: 0, width: 0, position: "absolute" }}
+          />
+          <button
+            id={"invoice" + 1}
+            value={1}
+            className="btn btn-info"
+            style={{
+              color: "black",
+              marginTop: "1%",
+              marginBottom: "1%",
+              marginLeft: "1%",
+              marginRight: "1%",
+              textAlign: "right",
+            }}
+            onClick={() => openFrame()}
+          >
+            Generate Invoice
+          </button>
         </OrderCardWrapper>
       </CustomContent>
     </CustomLayout>
