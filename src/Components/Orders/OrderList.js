@@ -33,7 +33,6 @@ const OrderList = () => {
   const [orders, setOrders] = useState([]);
   useEffect(() => {
     OrdersDataService.getAll()
-      .where("currentState", "==", true)
       .onSnapshot(onDataChange);
   }, []);
 

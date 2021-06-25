@@ -8,6 +8,7 @@ import {
   message,
   PageHeader,
 } from "antd";
+import { CheckCircleOutlined } from "@ant-design/icons";
 import { APP_NAME, ORDER_NAME } from "../../DefaultProps";
 import { CustomContent, CustomLayout } from "../navigation/AppLayout";
 import styled from "styled-components";
@@ -19,53 +20,22 @@ const PENDING_STATE = false;
 
 const { Panel } = Collapse;
 
-export const OrderCardWrapper = styled.div`
-  width: 100%;
-  height: auto;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-`;
-
-export const OrderCard = styled(Card)`
-  width: auto;
-  height: min-content;
-  min-width: 300px;
-  margin: 20px;
-  background: rgb(245, 245, 245);
-  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.08);
-  flex: 1 0 500px;
-  box-sizing: border-box;
-  margin: 1rem 0.25em;
-  @media screen and (min-width: 40em) {
-    .card {
-      max-width: calc(50% - 1em);
-    }
-  }
-
-  @media screen and (min-width: 60em) {
-    .card {
-      max-width: calc(25% - 1em);
-    }
-  }
-`;
-
-export const SplitterWrapper = styled.div`
+const SplitterWrapper = styled.div`
   display: grid;
   grid-template-columns: auto auto;
 `;
 
-export const OrderElementsWrapper = styled.div`
+const OrderElementsWrapper = styled.div`
   text-align: left;
   justify-content: space-evenly;
 `;
 
-export const StateAlert = styled(Alert)`
+const StateAlert = styled(Alert)`
   width: 170px;
   margin-bottom: 12px;
 `;
 
-const OrderComponent = () => {
+const OpenOrderComponent = () => {
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
@@ -104,37 +74,6 @@ const OrderComponent = () => {
     }
   };
 
-  const print_content = (
-    <div>
-      <table cellPadding={0} cellSpacing={0} className="t0">
-        <tbody>
-          <tr>..............</tr>
-          <tr>..INVOICE #1..</tr>
-          <tr>..............</tr>
-          <tr>..............</tr>
-          <tr>..............</tr>
-          <tr>..............</tr>
-        </tbody>
-      </table>
-    </div>
-  );
-
-  const openFrame = (print_c) => {
-    var pri = document.getElementById("ifmcontentstoprint").contentWindow;
-    pri.document.open();
-    pri.document.write(print_content);
-    pri.document.close();
-    pri.focus();
-    pri.print();
-  };
-
-  const orderTitle = (number, name) => (
-    <span>
-      <span>Orden: {number}</span><br/>
-      <span>Nombre del cliente: {name}</span>
-    </span>
-  );
-
   return (
     <CustomLayout>
       <PageHeader
@@ -145,10 +84,7 @@ const OrderComponent = () => {
       <CustomContent>
         <OrderCardWrapper>
           {orders.map((order, index) => (
-            <OrderCard
-              key={order.id}
-              title={orderTitle(order.orderNumber, order.clientName)}
-            >
+            <OrderCard key={order.id} title={"Orden: " + order.clientName}>
               <SplitterWrapper>
                 <OrderElementsWrapper style={{ marginRight: "20px" }}>
                   <p>Mesa: {order.table}</p>
@@ -194,6 +130,10 @@ const OrderComponent = () => {
                       </Text>
                       <Text type="success">${prod.price}</Text>
                       <Text> x{prod.amount}</Text>
+                      <Text> x{prod.amount}</Text>
+                      <Button>
+                        <CheckCircleOutlined />
+                      </Button>
                     </p>
                   ))}
                 </Panel>
@@ -227,41 +167,4 @@ const OrderComponent = () => {
   );
 };
 
-// Build Order Object from firestore collection item
-export const buildOrderObject = (item) => {
-  let data = item.data();
-  return {
-    id: item.id,
-    orderNumber: data.orderNumber,
-    openOrder: data.openOrder,
-    clientName: data.clientName,
-    currentState: data.currentState,
-    date: data.date,
-    products: data.products,
-    table: data.table,
-    cups: data.cups,
-    ice: data.ice,
-    uid: data.uid,
-    waiterName: data.waiterName,
-  };
-};
-
-export const buildOrderObjectWithProductFormatted = (item) => {
-  let data = item.data();
-  let newDate = new Date(data.date).toLocaleDateString();
-  return {
-    id: item.id,
-    orderNumber: data.orderNumber,
-    openOrder: data.openOrder,
-    clientName: data.clientName,
-    currentState: data.currentState,
-    date: newDate,
-    products: data.products.length,
-    table: data.table,
-    cups: data.cups,
-    ice: data.ice,
-    uid: data.uid,
-    waiterName: data.waiterName,
-  };
-};
-export default OrderComponent;
+export default OpenOrderComponent;
