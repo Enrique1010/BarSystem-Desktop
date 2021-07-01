@@ -8,10 +8,17 @@ import {
   message,
   PageHeader,
 } from "antd";
-import { CheckCircleOutlined } from "@ant-design/icons";
+import { CheckCircleOutlined, CheckCircleTwoTone } from "@ant-design/icons";
 import { APP_NAME, ORDER_NAME } from "../../DefaultProps";
 import { CustomContent, CustomLayout } from "../navigation/AppLayout";
 import styled from "styled-components";
+import {
+  OrderCard,
+  OrderCardWrapper,
+  openFrame,
+  buildOrderObject,
+  orderTitle,
+} from "./OrderComponent";
 import OrdersDataService from "../services/Orders.service";
 import Text from "antd/lib/typography/Text";
 
@@ -40,7 +47,7 @@ const OpenOrderComponent = () => {
 
   useEffect(() => {
     // Retrieve Orders data from firebase colletion
-    OrdersDataService.getPending().onSnapshot(onDataChange);
+    OrdersDataService.getOpen().onSnapshot(onDataChange);
   }, []);
 
   const onDataChange = (items) => {
@@ -52,7 +59,6 @@ const OpenOrderComponent = () => {
         let val = buildOrderObject(item);
         currentOrders.push(val);
       });
-      console.log(currentOrders);
       setOrders(currentOrders);
     }
   };
@@ -69,8 +75,18 @@ const OpenOrderComponent = () => {
     if (order.currentState === PENDING_STATE) {
       order.currentState = DONE_STATE;
       message.success("Pedido Completado");
-      // setOrders([...orders, order]);
       updateOrder(order);
+    }
+  };
+
+  const completeProduct = async (order, productIndex) => {
+    let prod = order.products[productIndex];
+    if (!!prod) {
+      prod["ready"] = true;
+      order.products[productIndex] = prod;
+      updateOrder(order);
+    } else {
+      message.error("No se pudo completar el pedido");
     }
   };
 
@@ -84,13 +100,18 @@ const OpenOrderComponent = () => {
       <CustomContent>
         <OrderCardWrapper>
           {orders.map((order, index) => (
-            <OrderCard key={order.id} title={"Orden: " + order.clientName}>
+            <OrderCard
+              key={order.id}
+              title={orderTitle(order.orderNumber, order.clientName)}
+            >
               <SplitterWrapper>
-                <OrderElementsWrapper style={{ marginRight: "20px" }}>
+              <OrderElementsWrapper style={{ marginRight: "20px" }}>
                   <p>Mesa: {order.table}</p>
                   <p>Fecha: {order.date}</p>
                   <p>
-                    <Text type="success">U: {order.waiterName}</Text>
+                    <Text type="success">Hielo: {order.ice ? 'Si' : 'No'}</Text> <br/>
+                    <Text type="success">Vasos: {order.cups ? 'Si' : 'No'}</Text> <br/>
+                    <Text type="success">Mesero: {order.waiterName}</Text>
                   </p>
                 </OrderElementsWrapper>
                 <OrderElementsWrapper>
@@ -121,7 +142,7 @@ const OpenOrderComponent = () => {
                   )}
                 </OrderElementsWrapper>
               </SplitterWrapper>
-              <Collapse defaultActiveKey={["0"]}>
+              <Collapse defaultActiveKey={["1"]}>
                 <Panel header="Pedidos" key="1">
                   {order.products.map((prod, index) => (
                     <p>
@@ -129,11 +150,14 @@ const OpenOrderComponent = () => {
                         {index + 1}- {prod.name}{" "}
                       </Text>
                       <Text type="success">${prod.price}</Text>
-                      <Text> x{prod.amount}</Text>
-                      <Text> x{prod.amount}</Text>
-                      <Button>
-                        <CheckCircleOutlined />
-                      </Button>
+                      <Text> x{prod.amount} </Text>
+                      {prod.ready ? (
+                        <CheckCircleTwoTone twoToneColor="#52c41a" />
+                      ) : (
+                        <Button onClick={() => completeProduct(order, index)}>
+                          <CheckCircleOutlined />
+                        </Button>
+                      )}
                     </p>
                   ))}
                 </Panel>

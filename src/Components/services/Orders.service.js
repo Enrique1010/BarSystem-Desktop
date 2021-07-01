@@ -14,10 +14,8 @@ class OrdersDataService {
   }
   
   getOpen() {
-    return db
-    .where("currentState", "==", false)
-    .where("openOrder", "==", true)
-    .orderBy("date", "desc");
+    return this.getPending()
+    .where("openOrder", "==", true);
   }
 
   create(order) {

@@ -14,6 +14,10 @@ import styled from "styled-components";
 import OrdersDataService from "../services/Orders.service";
 import Text from "antd/lib/typography/Text";
 
+// const electron = window.require('electron');
+// const remote = electron.remote;
+// const { BrowserWindow, Menu} = remote;
+
 const DONE_STATE = true;
 const PENDING_STATE = false;
 
@@ -50,6 +54,22 @@ export const OrderCard = styled(Card)`
   }
 `;
 
+export const openFrame = (print_c) => {
+  var pri = document.getElementById("ifmcontentstoprint").contentWindow;
+  pri.document.open();
+  pri.document.write(print_c);
+  pri.document.close();
+  pri.focus();
+  pri.print();
+};
+
+export const orderTitle = (number, name) => (
+  <span>
+    <span>Orden: {number}</span><br/>
+    <span>Nombre del cliente: {name}</span>
+  </span>
+);
+
 export const SplitterWrapper = styled.div`
   display: grid;
   grid-template-columns: auto auto;
@@ -82,7 +102,6 @@ const OrderComponent = () => {
         let val = buildOrderObject(item);
         currentOrders.push(val);
       });
-      console.log(currentOrders);
       setOrders(currentOrders);
     }
   };
@@ -99,41 +118,9 @@ const OrderComponent = () => {
     if (order.currentState === PENDING_STATE) {
       order.currentState = DONE_STATE;
       message.success("Pedido Completado");
-      // setOrders([...orders, order]);
       updateOrder(order);
     }
   };
-
-  const print_content = (
-    <div>
-      <table cellPadding={0} cellSpacing={0} className="t0">
-        <tbody>
-          <tr>..............</tr>
-          <tr>..INVOICE #1..</tr>
-          <tr>..............</tr>
-          <tr>..............</tr>
-          <tr>..............</tr>
-          <tr>..............</tr>
-        </tbody>
-      </table>
-    </div>
-  );
-
-  const openFrame = (print_c) => {
-    var pri = document.getElementById("ifmcontentstoprint").contentWindow;
-    pri.document.open();
-    pri.document.write(print_content);
-    pri.document.close();
-    pri.focus();
-    pri.print();
-  };
-
-  const orderTitle = (number, name) => (
-    <span>
-      <span>Orden: {number}</span><br/>
-      <span>Nombre del cliente: {name}</span>
-    </span>
-  );
 
   return (
     <CustomLayout>
@@ -154,7 +141,9 @@ const OrderComponent = () => {
                   <p>Mesa: {order.table}</p>
                   <p>Fecha: {order.date}</p>
                   <p>
-                    <Text type="success">U: {order.waiterName}</Text>
+                    <Text type="success">Hielo: {order.ice ? 'Si' : 'No'}</Text> <br/>
+                    <Text type="success">Vasos: {order.cups ? 'Si' : 'No'}</Text> <br/>
+                    <Text type="success">Mesero: {order.waiterName}</Text>
                   </p>
                 </OrderElementsWrapper>
                 <OrderElementsWrapper>
@@ -264,4 +253,6 @@ export const buildOrderObjectWithProductFormatted = (item) => {
     waiterName: data.waiterName,
   };
 };
+
+
 export default OrderComponent;
