@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   PieChartOutlined,
   DesktopOutlined,
@@ -11,12 +11,12 @@ import { ROUTE_ORDERS, ROUTE_INVENTORY, ROUTE_ORDERS_DONE, ROUTE_ORDERS_OPEN } f
 import { INVENTORY_NAME, OPEN_ORDER_NAME, ORDER_NAME, ORDER_NAME_DONE } from "../../DefaultProps";
 
 const CustomSidebar = () => {
-  // const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
   const history = useHistory();
 
-  // const toggleCollapsed = () => {
-  //   setCollapsed(!collapsed);
-  // };
+  const toggleCollapsed = () => {
+    setCollapsed(!collapsed);
+  };
 
   const handleClick = (path) => {
     history.push(path);
@@ -28,7 +28,7 @@ const CustomSidebar = () => {
       defaultOpenKeys={["sub1"]}
       mode="inline"
       theme="dark"
-      // inlineCollapsed={collapsed}
+      inlineCollapsed={collapsed}
     >
       <Menu.Item
         key="1"

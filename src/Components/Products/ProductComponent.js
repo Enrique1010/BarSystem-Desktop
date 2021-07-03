@@ -1,5 +1,12 @@
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { Popconfirm, message, Button, InputNumber, PageHeader, Table } from "antd";
+import {
+  Popconfirm,
+  message,
+  Button,
+  InputNumber,
+  PageHeader,
+  Table,
+} from "antd";
 import Modal from "antd/lib/modal/Modal";
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router";
@@ -49,9 +56,8 @@ const columns = [
 ];
 
 // Build Product Object from firestore collection item
-const buildProductObject = (item) => {
+export const buildProductObject = (item) => {
   let data = item.data();
-  console.log(data);
   return {
     id: item.id,
     name: data.name,

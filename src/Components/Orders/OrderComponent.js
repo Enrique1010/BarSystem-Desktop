@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Popconfirm,
   Alert,
@@ -13,6 +13,10 @@ import { CustomContent, CustomLayout } from "../navigation/AppLayout";
 import styled from "styled-components";
 import OrdersDataService from "../services/Orders.service";
 import Text from "antd/lib/typography/Text";
+import Invoice from "../invoice/Invoice";
+import { useReactToPrint } from "react-to-print";
+import ProductsDataService from "../services/Products.service";
+import { buildProductObject } from "../Products/ProductComponent";
 
 // const electron = window.require('electron');
 // const remote = electron.remote;
@@ -65,7 +69,8 @@ export const openFrame = (print_c) => {
 
 export const orderTitle = (number, name) => (
   <span>
-    <span>Orden: {number}</span><br/>
+    <span>Orden: {number}</span>
+    <br />
     <span>Nombre del cliente: {name}</span>
   </span>
 );
@@ -87,10 +92,13 @@ export const StateAlert = styled(Alert)`
 
 const OrderComponent = () => {
   const [orders, setOrders] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [invoiceOrder, setInvoiceOrder] = useState({});
 
   useEffect(() => {
     // Retrieve Orders data from firebase colletion
     OrdersDataService.getPending().onSnapshot(onDataChange);
+    ProductsDataService.getAll().onSnapshot(onProductChange);
   }, []);
 
   const onDataChange = (items) => {
@@ -106,6 +114,18 @@ const OrderComponent = () => {
     }
   };
 
+  const onProductChange = (items) => {
+    if (!!items) {
+      let currentProd = [];
+
+      items.forEach((item) => {
+        let val = buildProductObject(item);
+        currentProd.push(val);
+      });
+      setProducts(currentProd);
+    }
+  };
+
   const updateOrder = async (order) => {
     OrdersDataService.update(order.id, order);
   };
@@ -118,9 +138,25 @@ const OrderComponent = () => {
     if (order.currentState === PENDING_STATE) {
       order.currentState = DONE_STATE;
       message.success("Pedido Completado");
+      calculateOrder(order);
       updateOrder(order);
+      setInvoiceOrder(order);
     }
   };
+
+  const calculateOrder = (order) => {
+    order.products.map((prod, index) => {
+      let newProd = products.find((x) => x.productCode == prod.productCode);
+      console.log('PROD:S', products, "OIFJIR::", newProd);
+      newProd["supply"] = newProd.supply - prod.amount;
+      newProd["quantitySold"] = newProd.quantitySold + prod.amount;
+      ProductsDataService.update(newProd.id, newProd);
+    });
+  };
+
+  const handlePrint = () => {
+
+  }
 
   return (
     <CustomLayout>
@@ -141,8 +177,12 @@ const OrderComponent = () => {
                   <p>Mesa: {order.table}</p>
                   <p>Fecha: {order.date}</p>
                   <p>
-                    <Text type="success">Hielo: {order.ice ? 'Si' : 'No'}</Text> <br/>
-                    <Text type="success">Vasos: {order.cups ? 'Si' : 'No'}</Text> <br/>
+                    <Text type="success">Hielo: {order.ice ? "Si" : "No"}</Text>{" "}
+                    <br />
+                    <Text type="success">
+                      Vasos: {order.cups ? "Si" : "No"}
+                    </Text>{" "}
+                    <br />
                     <Text type="success">Mesero: {order.waiterName}</Text>
                   </p>
                 </OrderElementsWrapper>
@@ -152,7 +192,6 @@ const OrderComponent = () => {
                   ) : (
                     <>
                       <StateAlert message="Pendiente" type="warning" showIcon />
-                      {/* Required functionality */}
 
                       <Popconfirm
                         placement="top"
@@ -206,7 +245,7 @@ const OrderComponent = () => {
               marginRight: "1%",
               textAlign: "right",
             }}
-            onClick={() => openFrame()}
+            onClick={handlePrint}
           >
             Generate Invoice
           </button>
@@ -253,6 +292,5 @@ export const buildOrderObjectWithProductFormatted = (item) => {
     waiterName: data.waiterName,
   };
 };
-
 
 export default OrderComponent;

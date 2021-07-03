@@ -10,7 +10,6 @@ const ProductForm = () => {
   const history = useHistory();
 
   const onFinishForm = (values) => {
-    // console.log(values);
     let date = new Date().toLocaleString()
     values["registrationDate"] = date;
     ProductDataService.create(values);
