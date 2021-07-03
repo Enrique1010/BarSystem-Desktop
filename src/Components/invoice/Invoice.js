@@ -16,7 +16,7 @@ const InvoiceElement = (itemName, itemAmount, itemPrice) => (
   </tr>
 );
 
-const Invoice = () => {
+const Invoice = (props) => {
   const isOrderDefined = () => {
     console.log("CONSD::::", this.props);
     if (!!this.props.order) return true;
@@ -63,7 +63,7 @@ const Invoice = () => {
 
             {/* Here will be the Items */}
             {isOrderDefined ? (
-              order.products.map((prod, index) => {
+              props.order.products.map((prod, index) => {
                 <InvoiceElement
                   itemName={prod.productName}
                   itemAmount={prod.amount}
