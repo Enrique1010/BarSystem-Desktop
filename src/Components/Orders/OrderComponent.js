@@ -17,6 +17,7 @@ import Invoice from "../invoice/Invoice";
 import { useReactToPrint } from "react-to-print";
 import ProductsDataService from "../services/Products.service";
 import { buildProductObject } from "../Products/ProductComponent";
+import printJS from "print-js";
 
 // const electron = window.require('electron');
 // const remote = electron.remote;
@@ -58,13 +59,17 @@ export const OrderCard = styled(Card)`
   }
 `;
 
-export const openFrame = (print_c) => {
-  var pri = document.getElementById("ifmcontentstoprint").contentWindow;
-  pri.document.open();
-  pri.document.write(print_c);
-  pri.document.close();
-  pri.focus();
-  pri.print();
+export const openFrame = (afterPrint) => {
+  var divContents = document.getElementById("OrderInvoice").innerHTML;
+  console.log("ELEMENNNTT::", divContents);
+  var a = window.open('', '', 'height=300, width=500');
+  a.document.write("<html>");
+  a.document.write("<body >");
+  a.document.write(divContents);
+  a.document.write("</body></html>");
+  a.document.close();
+  a.print();
+  afterPrint();
 };
 
 export const orderTitle = (number, name) => (
@@ -93,13 +98,23 @@ export const StateAlert = styled(Alert)`
 const OrderComponent = () => {
   const [orders, setOrders] = useState([]);
   const [products, setProducts] = useState([]);
-  const [invoiceOrder, setInvoiceOrder] = useState({});
+  const [invoiceOrder, setInvoiceOrder] = useState(undefined);
 
   useEffect(() => {
     // Retrieve Orders data from firebase colletion
     OrdersDataService.getPending().onSnapshot(onDataChange);
     ProductsDataService.getAll().onSnapshot(onProductChange);
   }, []);
+
+  useEffect(() => {
+    handlePrint(afterPrint);
+  }, [invoiceOrder])
+
+  const afterPrint = () => {
+    // Remove the invoice order after printing
+    // then will remove the invoice from screen
+    setInvoiceOrder(undefined);
+  }
 
   const onDataChange = (items) => {
     if (!!items) {
@@ -147,16 +162,17 @@ const OrderComponent = () => {
   const calculateOrder = (order) => {
     order.products.map((prod, index) => {
       let newProd = products.find((x) => x.productCode == prod.productCode);
-      console.log('PROD:S', products, "OIFJIR::", newProd);
+      console.log("PROD:S", products, "OIFJIR::", newProd);
       newProd["supply"] = newProd.supply - prod.amount;
       newProd["quantitySold"] = newProd.quantitySold + prod.amount;
       ProductsDataService.update(newProd.id, newProd);
     });
   };
 
-  const handlePrint = () => {
-
-  }
+  const handlePrint = (afterPrint) => {
+    console.log("CONSOLLELEE:::", invoiceOrder);
+    if (!!invoiceOrder) openFrame(afterPrint);
+  };
 
   return (
     <CustomLayout>
@@ -251,6 +267,11 @@ const OrderComponent = () => {
           </button>
         </OrderCardWrapper>
       </CustomContent>
+      {!!invoiceOrder ? (
+        <Invoice order={invoiceOrder} />
+      ) : (
+        <></>
+      )}
     </CustomLayout>
   );
 };
