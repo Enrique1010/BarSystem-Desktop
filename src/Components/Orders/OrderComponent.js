@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Popconfirm,
   Alert,
@@ -13,15 +13,9 @@ import { CustomContent, CustomLayout } from "../navigation/AppLayout";
 import styled from "styled-components";
 import OrdersDataService from "../services/Orders.service";
 import Text from "antd/lib/typography/Text";
-import Invoice from "../invoice/Invoice";
-import { useReactToPrint } from "react-to-print";
+import Invoice, { InvoiceElement, RawInvoiceStyle } from "../invoice/Invoice";
 import ProductsDataService from "../services/Products.service";
 import { buildProductObject } from "../Products/ProductComponent";
-import printJS from "print-js";
-
-// const electron = window.require('electron');
-// const remote = electron.remote;
-// const { BrowserWindow, Menu} = remote;
 
 const DONE_STATE = true;
 const PENDING_STATE = false;
@@ -61,10 +55,10 @@ export const OrderCard = styled(Card)`
 
 export const openFrame = (afterPrint) => {
   var divContents = document.getElementById("OrderInvoice").innerHTML;
-  console.log("ELEMENNNTT::", divContents);
-  var a = window.open('', '', 'height=300, width=500');
+  console.log("ORDER INVOICE:", divContents);
+  var a = window.open("", "", "height=300, width=500");
   a.document.write("<html>");
-  a.document.write("<body >");
+  a.document.write(`<body style="${RawInvoiceStyle}">`);
   a.document.write(divContents);
   a.document.write("</body></html>");
   a.document.close();
@@ -108,13 +102,21 @@ const OrderComponent = () => {
 
   useEffect(() => {
     handlePrint(afterPrint);
-  }, [invoiceOrder])
+  }, [invoiceOrder]);
 
   const afterPrint = () => {
     // Remove the invoice order after printing
     // then will remove the invoice from screen
     setInvoiceOrder(undefined);
-  }
+  };
+
+  const productInvoiceList = (order) => {
+    let prodList = [];
+    order.products.forEach((prod) => {
+      prodList += InvoiceElement(prod.productName, prod.price, prod.amount);
+    });
+    return prodList;
+  };
 
   const onDataChange = (items) => {
     if (!!items) {
@@ -162,7 +164,6 @@ const OrderComponent = () => {
   const calculateOrder = (order) => {
     order.products.map((prod, index) => {
       let newProd = products.find((x) => x.productCode == prod.productCode);
-      console.log("PROD:S", products, "OIFJIR::", newProd);
       newProd["supply"] = newProd.supply - prod.amount;
       newProd["quantitySold"] = newProd.quantitySold + prod.amount;
       ProductsDataService.update(newProd.id, newProd);
@@ -170,7 +171,6 @@ const OrderComponent = () => {
   };
 
   const handlePrint = (afterPrint) => {
-    console.log("CONSOLLELEE:::", invoiceOrder);
     if (!!invoiceOrder) openFrame(afterPrint);
   };
 
@@ -197,7 +197,7 @@ const OrderComponent = () => {
                     <br />
                     <Text type="success">
                       Vasos: {order.cups ? "Si" : "No"}
-                    </Text>{" "}
+                    </Text>
                     <br />
                     <Text type="success">Mesero: {order.waiterName}</Text>
                   </p>
@@ -263,15 +263,11 @@ const OrderComponent = () => {
             }}
             onClick={handlePrint}
           >
-            Generate Invoice
+            order Generate Invoice
           </button>
         </OrderCardWrapper>
       </CustomContent>
-      {!!invoiceOrder ? (
-        <Invoice order={invoiceOrder} />
-      ) : (
-        <></>
-      )}
+      {!!invoiceOrder ? <Invoice order={invoiceOrder} products={productInvoiceList(invoiceOrder)} s/> : <></>}
     </CustomLayout>
   );
 };

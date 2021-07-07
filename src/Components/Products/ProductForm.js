@@ -1,5 +1,12 @@
 import React from "react";
-import { Button, Form, Input, PageHeader } from "antd";
+import {
+  notification,
+  Button,
+  Form,
+  Input,
+  InputNumber,
+  PageHeader,
+} from "antd";
 import { CustomContent, CustomLayout } from "../navigation/AppLayout";
 import { ADD_PRODUCT_NAME, APP_NAME } from "../../DefaultProps";
 import { useHistory } from "react-router";
@@ -8,16 +15,34 @@ import ProductDataService from "../services/Products.service";
 
 const ProductForm = () => {
   const history = useHistory();
+  const [form] = Form.useForm();
 
   const onFinishForm = (values) => {
-    let date = new Date().toLocaleString()
+    let date = new Date().toLocaleString();
     values["registrationDate"] = date;
+    values["lastRegistrationDate"] = date;
+    values["dailySales"] = 0;
+    values["lastAddedSupply"] = 0;
+    values["newSupply"] = 0;
+    values["olderSupply"] = 0;
+    values["quantitySold"] = 0;
     ProductDataService.create(values);
+    console.log(values.name);
+    openNotification(values.name);
+    form.resetFields();
+  };
+
+  const openNotification = (name) => {
+    notification.success({
+      message: `Producto Agregado`,
+      description: `Producto: ${name} se agregó correctamente`,
+      placement:'bottomRight',
+    });
   };
 
   const backToIntenvory = () => {
     history.push(ROUTE_INVENTORY);
-  }
+  };
 
   return (
     <CustomLayout>
@@ -32,10 +57,16 @@ const ProductForm = () => {
         ]}
       ></PageHeader>
       <CustomContent>
-        <Form layout="vertical" style={{maxWidth: '500px', alignContent: 'left'}} name="addProductForm" onFinish={onFinishForm}>
+        <Form
+          form={form}
+          layout="vertical"
+          style={{ maxWidth: "500px", textAlign: "start" }}
+          name="addProductForm"
+          onFinish={onFinishForm}
+        >
           {/* Add actua */}
-        <Form.Item
-            name="code"
+          <Form.Item
+            name="productCode"
             label="Código"
             rules={[
               {
@@ -77,9 +108,43 @@ const ProductForm = () => {
               { required: true, message: "Introduzca el Precio del producto." },
             ]}
           >
-            <Input type="transaction-amount" />
+            <InputNumber
+              defaultValue={0}
+              min={0}
+              formatter={(value) =>
+                `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+              }
+              parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
+              style={{ minWidth: 150 }}
+            />
           </Form.Item>
-          <Button type="primary" htmlType="submit">Crear</Button>
+          <Form.Item
+            name="supply"
+            label="Cantidad"
+            rules={[
+              {
+                required: true,
+                message: "Introduzca cuantos de este producto tiene.",
+              },
+            ]}
+          >
+            <InputNumber min={0} style={{ minWidth: 150 }} />
+          </Form.Item>
+          <Button
+            type="primary"
+            htmlType="submit"
+            style={{ minWidth: 100, marginRight: 10 }}
+          >
+            Crear
+          </Button>
+          <Button
+            style={{ minWidth: 100 }}
+            onClick={() => {
+              form.resetFields();
+            }}
+          >
+            Limpiar
+          </Button>
         </Form>
       </CustomContent>
     </CustomLayout>
