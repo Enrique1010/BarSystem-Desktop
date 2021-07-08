@@ -1,56 +1,35 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import mainLogo from "../../logo.jpg";
 
-export const InvoiceElement = (itemName, itemAmount, itemPrice) => (
-  <tr class="service">
-    <td class="tableitem">
-      <p style={{ fontSize: "9px", lineHeight: "1.2em" }} class="itemtext">
-        {itemName}
-      </p>
-    </td>
-    <td class="tableitem">
-      <p style={{ fontSize: "9px", lineHeight: "1.2em" }} class="itemtext">
-        {itemAmount}
-      </p>
-    </td>
-    <td class="tableitem">
-      <p style={{ fontSize: "9px", lineHeight: "1.2em" }} class="itemtext">
-        {itemPrice}
-      </p>
-    </td>
-  </tr>
-);
+export const InvoiceElement = (order) => {
+  var prodList = [];
+  if (!!order.products) {
+    prodList = order.products.map((prd) => (
+      <tr class="service">
+        <td class="tableitem">
+          <p style={{ fontSize: "9px", lineHeight: "1.2em" }} class="itemtext">
+            {prd.name}
+          </p>
+        </td>
+        <td class="tableitem">
+          <p style={{ fontSize: "9px", lineHeight: "1.2em" }} class="itemtext">
+            x{prd.amount}
+          </p>
+        </td>
+        <td class="tableitem">
+          <p style={{ fontSize: "9px", lineHeight: "1.2em" }} class="itemtext">
+            ${prd.price}.00
+          </p>
+        </td>
+      </tr>
+    ));
+  }
+  return prodList;
+};
 
 const Invoice = (props) => {
-  const [total, setTotal] = useState(0.0);
-  const [products, setProducts] = useState(undefined);
-  
-  const isOrderDefined = () => {
-    console.log("CONSD::::", props);
-    if (!!props.order) {
-      return true;
-    } else return false;
-  };
-
-  // if (isOrderDefined) {
-  //   let prodContent = [];
-
-  //   props.order.products.map((prod, index) => {
-  //     prodContent += (
-  //       <InvoiceElement
-  //         itemName={prod.productName}
-  //         itemAmount={prod.amount}
-  //         itemPrice={prod.price}
-  //       />
-  //     );
-  //     setTotal(total + prod.price * prod.amount);
-  //   });
-
-  //   setProducts(prodContent);
-  // } else {
-  //   console.log("AHHHGGHG!!!!");
-  // }
+  const { order, products, total } = props;
 
   return (
     <div id="OrderInvoice">
@@ -58,7 +37,7 @@ const Invoice = (props) => {
         <center id="top">
           <div class="logo"></div>
           <div class="info">
-            <h2 style={{ fontSize: "10px", fontWeight: 250 }}>
+            <h2 style={{ fontSize: "16px", fontWeight: 700 }}>
               11:11 Live {"&"} Drink
             </h2>
           </div>
@@ -66,17 +45,20 @@ const Invoice = (props) => {
 
         <div id="mid">
           <div class="info">
-            <h2 style={{ fontSize: "10px", fontWeight: 250 }}>Contact Info</h2>
-            <p style={{ fontSize: "9px", lineHeight: "1.2em" }}>
+            <h2 style={{ fontSize: "10px", fontWeight: 400 }}>Contacto</h2>
+            <p style={{ fontSize: "9px", fontWeight: 250 }}>
               Direccion : street city, state 0000
               <br />
-              Email : JohnDoe@gmail.com
-              <br />
-              Tel. : 809-333-3333
+              Email : 11.11live.drink@gmail.com
               <br />
             </p>
-
-            <h2 style={{ fontSize: "10px", fontWeight: 250 }}>Orden # {props.order.id}</h2>
+            <br />
+            <h2 style={{ fontSize: "10px", fontWeight: 400}}>
+              Orden #{order.id}
+            </h2>
+            <h2 style={{ fontSize: "10px", fontWeight: 250 }}>
+              Mesa #{order.table}
+            </h2>
           </div>
         </div>
 
@@ -85,16 +67,16 @@ const Invoice = (props) => {
             <table width="100%">
               <tr class="tabletitle">
                 <td class="item">
-                  <h2 style={{ fontSize: "10px", fontWeight: 250 }}>
-                    Producto
+                  <h2 style={{ fontSize: "10px", fontWeight: 250, lineHeight: "2em" }}>
+                    <bold>Producto</bold>
                   </h2>
                 </td>
                 <td class="Hours">
-                  <h2 style={{ fontSize: "10px", fontWeight: 250 }}>Cant.</h2>
+                  <h2 style={{ fontSize: "10px", fontWeight: 250, lineHeight: "2em", }}><bold>Cantidad</bold></h2>
                 </td>
                 <td class="Rate">
-                  <h2 style={{ fontSize: "10px", fontWeight: 250 }}>
-                    Sub Total
+                  <h2 style={{ fontSize: "10px", fontWeight: 250, lineHeight: "2em", }}>
+                    <bold>Sub Total</bold>
                   </h2>
                 </td>
               </tr>
@@ -105,11 +87,11 @@ const Invoice = (props) => {
               <tr class="tabletitle">
                 <td></td>
                 <td class="Rate">
-                  <h2 style={{ fontSize: "10px", fontWeight: 250 }}>Total</h2>
+                  <h2 style={{ fontSize: "10px", fontWeight: 400 }}>Total</h2>
                 </td>
                 <td class="payment">
-                  <h2 style={{ fontSize: "10px", fontWeight: 250 }}>
-                    ${total}
+                  <h2 style={{ fontSize: "10px", fontWeight: 400 }}>
+                    ${total}.00
                   </h2>
                 </td>
               </tr>
@@ -117,8 +99,8 @@ const Invoice = (props) => {
           </div>
 
           <div id="legalcopy">
-            <p style={{ fontSize: "9px", lineHeight: "1.2em" }} class="legal">
-              <strong>Gracias por comprar!</strong>
+            <p style={{ fontSize: "12px", lineHeight: "2em", textAlign: 'center'}} class="legal">
+              <strong>¡Gracias por su comprar!</strong>
             </p>
           </div>
         </div>

@@ -110,12 +110,13 @@ const OrderComponent = () => {
     setInvoiceOrder(undefined);
   };
 
-  const productInvoiceList = (order) => {
-    let prodList = [];
-    order.products.forEach((prod) => {
-      prodList += InvoiceElement(prod.productName, prod.price, prod.amount);
-    });
-    return prodList;
+  const totalPrice = (order) => {
+    let total = 0.0;
+    if (!!order.products)
+      order.products.forEach((prod) => {
+        total += prod.price * prod.amount;
+      });
+    return total;
   };
 
   const onDataChange = (items) => {
@@ -267,7 +268,15 @@ const OrderComponent = () => {
           </button>
         </OrderCardWrapper>
       </CustomContent>
-      {!!invoiceOrder ? <Invoice order={invoiceOrder} products={productInvoiceList(invoiceOrder)} s/> : <></>}
+      {!!invoiceOrder ? (
+        <Invoice
+          order={invoiceOrder}
+          products={InvoiceElement(invoiceOrder)}
+          total={totalPrice(invoiceOrder)}
+        />
+      ) : (
+        <></>
+      )}
     </CustomLayout>
   );
 };
