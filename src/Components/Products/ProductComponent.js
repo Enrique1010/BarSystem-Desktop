@@ -7,6 +7,7 @@ import {
   PageHeader,
   Table,
 } from "antd";
+// import Highlighter from 'react-highlight-words';
 import Modal from "antd/lib/modal/Modal";
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router";
@@ -79,6 +80,8 @@ const ProductComponent = () => {
   const [newSupply, setNewSupply] = useState(0);
   const [modal, contextHolder] = Modal.useModal();
   const [messageHolder, messageContexHolder] = message.useMessage();
+  const [searchText] = useState('');
+  const [searchedColumn] = useState('');
   const history = useHistory();
 
   const tableColumns = () => {

@@ -18,9 +18,13 @@ import {
   openFrame,
   buildOrderObject,
   orderTitle,
+  totalPrice,
 } from "./OrderComponent";
+import Invoice, { InvoiceElement, RawInvoiceStyle } from "../invoice/Invoice";
 import OrdersDataService from "../services/Orders.service";
 import Text from "antd/lib/typography/Text";
+import ProductsDataService from "../services/Products.service";
+import { buildProductObject } from "../Products/ProductComponent";
 
 const DONE_STATE = true;
 const PENDING_STATE = false;
@@ -44,11 +48,24 @@ const StateAlert = styled(Alert)`
 
 const OpenOrderComponent = () => {
   const [orders, setOrders] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [invoiceOrder, setInvoiceOrder] = useState(undefined);
 
   useEffect(() => {
     // Retrieve Orders data from firebase colletion
     OrdersDataService.getOpen().onSnapshot(onDataChange);
+    ProductsDataService.getAll().onSnapshot(onProductChange);
   }, []);
+
+  useEffect(() => {
+    handlePrint(afterPrint);
+  }, [invoiceOrder]);
+
+  const afterPrint = () => {
+    // Remove the invoice order after printing
+    // then will remove the invoice from screen
+    setInvoiceOrder(undefined);
+  };
 
   const onDataChange = (items) => {
     if (!!items) {
@@ -60,6 +77,18 @@ const OpenOrderComponent = () => {
         currentOrders.push(val);
       });
       setOrders(currentOrders);
+    }
+  };
+
+  const onProductChange = (items) => {
+    if (!!items) {
+      let currentProd = [];
+
+      items.forEach((item) => {
+        let val = buildProductObject(item);
+        currentProd.push(val);
+      });
+      setProducts(currentProd);
     }
   };
 
@@ -75,7 +104,9 @@ const OpenOrderComponent = () => {
     if (order.currentState === PENDING_STATE) {
       order.currentState = DONE_STATE;
       message.success("Pedido Completado");
+      calculateOrder(order);
       updateOrder(order);
+      setInvoiceOrder(order);
     }
   };
 
@@ -88,6 +119,19 @@ const OpenOrderComponent = () => {
     } else {
       message.error("No se pudo completar el pedido");
     }
+  };
+
+  const calculateOrder = (order) => {
+    order.products.map((prod, index) => {
+      let newProd = products.find((x) => x.productCode == prod.productCode);
+      newProd["supply"] = newProd.supply - prod.amount;
+      newProd["quantitySold"] = newProd.quantitySold + prod.amount;
+      ProductsDataService.update(newProd.id, newProd);
+    });
+  };
+
+  const handlePrint = (afterPrint) => {
+    if (!!invoiceOrder) openFrame(afterPrint);
   };
 
   return (
@@ -105,12 +149,16 @@ const OpenOrderComponent = () => {
               title={orderTitle(order.orderNumber, order.clientName)}
             >
               <SplitterWrapper>
-              <OrderElementsWrapper style={{ marginRight: "20px" }}>
+                <OrderElementsWrapper style={{ marginRight: "20px" }}>
                   <p>Mesa: {order.table}</p>
                   <p>Fecha: {order.date}</p>
                   <p>
-                    <Text type="success">Hielo: {order.ice ? 'Si' : 'No'}</Text> <br/>
-                    <Text type="success">Vasos: {order.cups ? 'Si' : 'No'}</Text> <br/>
+                    <Text type="success">Hielo: {order.ice ? "Si" : "No"}</Text>{" "}
+                    <br />
+                    <Text type="success">
+                      Vasos: {order.cups ? "Si" : "No"}
+                    </Text>{" "}
+                    <br />
                     <Text type="success">Mesero: {order.waiterName}</Text>
                   </p>
                 </OrderElementsWrapper>
@@ -169,24 +217,17 @@ const OpenOrderComponent = () => {
             id="ifmcontentstoprint"
             style={{ height: 0, width: 0, position: "absolute" }}
           />
-          <button
-            id={"invoice" + 1}
-            value={1}
-            className="btn btn-info"
-            style={{
-              color: "black",
-              marginTop: "1%",
-              marginBottom: "1%",
-              marginLeft: "1%",
-              marginRight: "1%",
-              textAlign: "right",
-            }}
-            onClick={() => openFrame()}
-          >
-            Generate Invoice
-          </button>
         </OrderCardWrapper>
       </CustomContent>
+      {!!invoiceOrder ? (
+        <Invoice
+          order={invoiceOrder}
+          products={InvoiceElement(invoiceOrder)}
+          total={totalPrice(invoiceOrder)}
+        />
+      ) : (
+        <></>
+      )}
     </CustomLayout>
   );
 };

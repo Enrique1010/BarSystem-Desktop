@@ -38,7 +38,10 @@ const Invoice = (props) => {
           <div class="logo"></div>
           <div class="info">
             <h2 style={{ fontSize: "16px", fontWeight: 700 }}>
-              11:11 Live {"&"} Drink
+              11:11
+            </h2>
+            <h2 style={{ fontSize: "16px", fontWeight: 700 }}>
+              Live {"&"} Drink
             </h2>
           </div>
         </center>

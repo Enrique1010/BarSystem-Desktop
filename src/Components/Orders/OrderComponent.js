@@ -53,6 +53,14 @@ export const OrderCard = styled(Card)`
   }
 `;
 
+export const orderTitle = (number, name) => (
+  <span>
+    <span>Orden: {number}</span>
+    <br />
+    <span>Nombre del cliente: {name}</span>
+  </span>
+);
+
 export const openFrame = (afterPrint) => {
   var divContents = document.getElementById("OrderInvoice").innerHTML;
   console.log("ORDER INVOICE:", divContents);
@@ -66,13 +74,14 @@ export const openFrame = (afterPrint) => {
   afterPrint();
 };
 
-export const orderTitle = (number, name) => (
-  <span>
-    <span>Orden: {number}</span>
-    <br />
-    <span>Nombre del cliente: {name}</span>
-  </span>
-);
+export const totalPrice = (order) => {
+  let total = 0.0;
+  if (!!order.products)
+    order.products.forEach((prod) => {
+      total += prod.price * prod.amount;
+    });
+  return total;
+};
 
 export const SplitterWrapper = styled.div`
   display: grid;
@@ -108,15 +117,6 @@ const OrderComponent = () => {
     // Remove the invoice order after printing
     // then will remove the invoice from screen
     setInvoiceOrder(undefined);
-  };
-
-  const totalPrice = (order) => {
-    let total = 0.0;
-    if (!!order.products)
-      order.products.forEach((prod) => {
-        total += prod.price * prod.amount;
-      });
-    return total;
   };
 
   const onDataChange = (items) => {
@@ -250,22 +250,6 @@ const OrderComponent = () => {
             id="ifmcontentstoprint"
             style={{ height: 0, width: 0, position: "absolute" }}
           />
-          <button
-            id={"invoice" + 1}
-            value={1}
-            className="btn btn-info"
-            style={{
-              color: "black",
-              marginTop: "1%",
-              marginBottom: "1%",
-              marginLeft: "1%",
-              marginRight: "1%",
-              textAlign: "right",
-            }}
-            onClick={handlePrint}
-          >
-            order Generate Invoice
-          </button>
         </OrderCardWrapper>
       </CustomContent>
       {!!invoiceOrder ? (

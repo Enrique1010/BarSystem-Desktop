@@ -10,11 +10,13 @@ class OrdersDataService {
   getPending() {
     return db
     .where("currentState", "==", false)
+    .where("openOrder", "==", false)
     .orderBy("date", "desc");
   }
   
   getOpen() {
-    return this.getPending()
+    return  db
+    .where("currentState", "==", false)
     .where("openOrder", "==", true);
   }
 

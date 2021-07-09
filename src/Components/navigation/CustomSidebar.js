@@ -7,7 +7,7 @@ import {
 import { Menu } from "antd";
 import styled from "styled-components";
 import { useHistory } from "react-router-dom";
-import { ROUTE_ORDERS, ROUTE_INVENTORY, ROUTE_ORDERS_DONE, ROUTE_ORDERS_OPEN } from "./Routes";
+import { ROUTE_ORDERS, ROUTE_INVENTORY, ROUTE_ORDERS_DONE, ROUTE_ORDERS_OPEN, ROUTE_LOG_OUT } from "./Routes";
 import { INVENTORY_NAME, OPEN_ORDER_NAME, ORDER_NAME, ORDER_NAME_DONE } from "../../DefaultProps";
 
 const CustomSidebar = () => {
@@ -61,7 +61,7 @@ const CustomSidebar = () => {
       >
         {INVENTORY_NAME}
       </Menu.Item>
-      <Menu.Item key="5" icon={<ContainerOutlined />}>
+      <Menu.Item key="5" icon={<ContainerOutlined />} onClick={() => handleClick(ROUTE_LOG_OUT)} >
         Salir
       </Menu.Item>
     </StyledMenu>
