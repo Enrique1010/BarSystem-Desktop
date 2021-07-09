@@ -119,7 +119,6 @@ const ProductComponent = () => {
   };
 
   const AddProductConfig = (e) => {
-    console.log(e);
     return {
       title: "Agregando Producto...",
       content: (

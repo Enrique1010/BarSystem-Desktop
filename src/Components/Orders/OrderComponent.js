@@ -63,7 +63,6 @@ export const orderTitle = (number, name) => (
 
 export const openFrame = (afterPrint) => {
   var divContents = document.getElementById("OrderInvoice").innerHTML;
-  console.log("ORDER INVOICE:", divContents);
   var a = window.open("", "", "height=300, width=500");
   a.document.write("<html>");
   a.document.write(`<body style="${RawInvoiceStyle}">`);
