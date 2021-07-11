@@ -61,7 +61,7 @@ export const orderTitle = (number, name) => (
   </span>
 );
 
-export const openFrame = (afterPrint) => {
+export const openFrame = () => {
   var divContents = document.getElementById("OrderInvoice").innerHTML;
   var a = window.open("", "", "height=300, width=500");
   a.document.write("<html>");
@@ -70,7 +70,6 @@ export const openFrame = (afterPrint) => {
   a.document.write("</body></html>");
   a.document.close();
   a.print();
-  afterPrint();
 };
 
 export const totalPrice = (order) => {
@@ -109,7 +108,14 @@ const OrderComponent = () => {
   }, []);
 
   useEffect(() => {
-    handlePrint(afterPrint);
+    const handlePrint = () => {
+      if (!!invoiceOrder) {
+        openFrame();
+        afterPrint();
+      }
+    };
+
+    handlePrint();
   }, [invoiceOrder]);
 
   const afterPrint = () => {
@@ -162,16 +168,12 @@ const OrderComponent = () => {
   };
 
   const calculateOrder = (order) => {
-    order.products.map((prod, index) => {
-      let newProd = products.find((x) => x.productCode == prod.productCode);
+    order.products.forEach((prod) => {
+      let newProd = products.find((x) => x.productCode === prod.productCode);
       newProd["supply"] = newProd.supply - prod.amount;
       newProd["quantitySold"] = newProd.quantitySold + prod.amount;
       ProductsDataService.update(newProd.id, newProd);
     });
-  };
-
-  const handlePrint = (afterPrint) => {
-    if (!!invoiceOrder) openFrame(afterPrint);
   };
 
   return (
@@ -183,7 +185,7 @@ const OrderComponent = () => {
       ></PageHeader>
       <CustomContent>
         <OrderCardWrapper>
-          {orders.map((order, index) => (
+          {orders.map((order) => (
             <OrderCard
               key={order.id}
               title={orderTitle(order.orderNumber, order.clientName)}
@@ -244,11 +246,6 @@ const OrderComponent = () => {
               </Collapse>
             </OrderCard>
           ))}
-
-          <iframe
-            id="ifmcontentstoprint"
-            style={{ height: 0, width: 0, position: "absolute" }}
-          />
         </OrderCardWrapper>
       </CustomContent>
       {!!invoiceOrder ? (

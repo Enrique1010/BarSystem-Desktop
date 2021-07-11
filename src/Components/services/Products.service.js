@@ -7,10 +7,10 @@ class ProductsDataService {
     return db;
   }
 
-  create(order) {
+  create(product) {
     let id = db.doc().id;
-    order["id"] = id;
-    return db.doc(id).set(order);
+    product["id"] = id;
+    return db.doc(id).set(product);
   }
 
   update(id, value) {

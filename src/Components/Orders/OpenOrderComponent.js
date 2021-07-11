@@ -1,13 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  Popconfirm,
-  Alert,
-  Button,
-  Card,
-  Collapse,
-  message,
-  PageHeader,
-} from "antd";
+import { Popconfirm, Alert, Button, Collapse, message, PageHeader } from "antd";
 import { CheckCircleOutlined, CheckCircleTwoTone } from "@ant-design/icons";
 import { APP_NAME, ORDER_NAME } from "../../DefaultProps";
 import { CustomContent, CustomLayout } from "../navigation/AppLayout";
@@ -20,7 +12,7 @@ import {
   orderTitle,
   totalPrice,
 } from "./OrderComponent";
-import Invoice, { InvoiceElement, RawInvoiceStyle } from "../invoice/Invoice";
+import Invoice, { InvoiceElement } from "../invoice/Invoice";
 import OrdersDataService from "../services/Orders.service";
 import Text from "antd/lib/typography/Text";
 import ProductsDataService from "../services/Products.service";
@@ -58,7 +50,14 @@ const OpenOrderComponent = () => {
   }, []);
 
   useEffect(() => {
-    handlePrint(afterPrint);
+    const handlePrint = () => {
+      if (!!invoiceOrder) {
+        openFrame();
+        afterPrint();
+      }
+    };
+
+    handlePrint();
   }, [invoiceOrder]);
 
   const afterPrint = () => {
@@ -122,16 +121,12 @@ const OpenOrderComponent = () => {
   };
 
   const calculateOrder = (order) => {
-    order.products.map((prod, index) => {
-      let newProd = products.find((x) => x.productCode == prod.productCode);
+    order.products.forEach((prod) => {
+      let newProd = products.find((x) => x.productCode === prod.productCode);
       newProd["supply"] = newProd.supply - prod.amount;
       newProd["quantitySold"] = newProd.quantitySold + prod.amount;
       ProductsDataService.update(newProd.id, newProd);
     });
-  };
-
-  const handlePrint = (afterPrint) => {
-    if (!!invoiceOrder) openFrame(afterPrint);
   };
 
   return (
@@ -143,7 +138,7 @@ const OpenOrderComponent = () => {
       ></PageHeader>
       <CustomContent>
         <OrderCardWrapper>
-          {orders.map((order, index) => (
+          {orders.map((order) => (
             <OrderCard
               key={order.id}
               title={orderTitle(order.orderNumber, order.clientName)}
@@ -212,11 +207,6 @@ const OpenOrderComponent = () => {
               </Collapse>
             </OrderCard>
           ))}
-
-          <iframe
-            id="ifmcontentstoprint"
-            style={{ height: 0, width: 0, position: "absolute" }}
-          />
         </OrderCardWrapper>
       </CustomContent>
       {!!invoiceOrder ? (

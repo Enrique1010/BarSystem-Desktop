@@ -6,6 +6,7 @@ import {
   InputNumber,
   PageHeader,
   Table,
+  Input,
 } from "antd";
 // import Highlighter from 'react-highlight-words';
 import Modal from "antd/lib/modal/Modal";
@@ -77,11 +78,11 @@ export const buildProductObject = (item) => {
 
 const ProductComponent = () => {
   const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [nameFilter, setNameFilter] = useState('');
   const [newSupply, setNewSupply] = useState(0);
   const [modal, contextHolder] = Modal.useModal();
-  const [messageHolder, messageContexHolder] = message.useMessage();
-  const [searchText] = useState('');
-  const [searchedColumn] = useState('');
+  const [messageHolder] = message.useMessage();
   const history = useHistory();
 
   const tableColumns = () => {
@@ -117,6 +118,25 @@ const ProductComponent = () => {
     ];
     return cols;
   };
+
+  const FilterByNameInput = (
+    <Input
+      placeholder="Filtrar por Nombre"
+      value={nameFilter}
+      onChange={(e) => {
+        const filter = e.target.value;
+        setNameFilter(filter);
+        if (filter.trim() !== "") {
+          const filteredData = products.filter((prd) =>
+            prd.name.includes(filter)
+          );
+          setFilteredProducts(filteredData);
+        } else {
+          setFilteredProducts(undefined);
+        }
+      }}
+    />
+  );
 
   const AddProductConfig = (e) => {
     return {
@@ -208,7 +228,11 @@ const ProductComponent = () => {
         ]}
       ></PageHeader>
       <CustomContent>
-        <PTable dataSource={products} columns={tableColumns()} />
+        {FilterByNameInput}
+        <PTable
+          dataSource={!!filteredProducts && filteredProducts.length > 0 ? filteredProducts : products}
+          columns={tableColumns()}
+        />
       </CustomContent>
       {contextHolder}
     </CustomLayout>
