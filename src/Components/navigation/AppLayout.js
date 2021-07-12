@@ -70,11 +70,13 @@ const AppLayout = () => {
             });
           } else {
             // Crear usuario y asignar rol
+            let date = new Date().toLocaleString([], { hour12: true});
             const newUser = createUser(
               currentUser.email,
               currentUser.displayName,
               "pending",
-              currentUser.uid
+              currentUser.uid,
+              date,
             );
             if (!!currentUser.uid) {
               UsersService.create(newUser);
@@ -197,13 +199,14 @@ export const LoginForm = styled.div`
   padding: 10px;
 `;
 
-const createUser = (email, name, role, uid) => {
+const createUser = (email, name, role, uid, date) => {
   return {
     email: email,
-    name: name,
+    userName: name,
     role: role,
     uid: uid,
-  };
+    date: date,
+  };  
 };
 
 export default AppLayout;

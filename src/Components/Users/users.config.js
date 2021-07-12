@@ -33,3 +33,13 @@ export const validateRoleActions = (userRolesForbiddenActions, required) => {
   });
   return required.length === found.length;
 };
+
+export const parseRole = (role) => {
+  var newRole = "";
+  if (role === "pending") newRole = "Sin asignar";
+  else if (role === "admin") newRole = "Administrador";
+  else if (role === "waiter") newrole = "Mesero";
+  else if (role === "bartender") newrole = "Bartender";
+  
+  return newrole;
+};
