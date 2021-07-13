@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import mainLogo from "../../logo.jpg";
+import mainLogo from "../../logo.jpeg";
 
 export const InvoiceElement = (order) => {
   var prodList = [];

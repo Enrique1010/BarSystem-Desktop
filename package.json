@@ -1,5 +1,5 @@
 {
-  "name": "barsystem-desktop",
+  "name": "11-11_barsystem_desktop",
   "version": "0.1.0",
   "private": true,
   "homepage": "./",
@@ -32,7 +32,7 @@
     "eject": "react-scripts eject",
     "dev": "concurrently \"npm start\" \"wait-on http://localhost:3000 && electron .\"",
     "ebuild": "npm run build && node_modules/.bin/build",
-    "create-exe-x64": "electron-packager \"./\" \"barsystem-desktop\" --platform=win32 --arch=x64",
+    "create-exe-x64": "electron-packager \"./\" \"11:11 BarSystemS-desktop\" --platform=win32 --arch=x64",
     "create-exe-arm64": "electron-packager <sourcedir> <appname> --platform=win32 --arch=arm64"
   },
   "eslintConfig": {

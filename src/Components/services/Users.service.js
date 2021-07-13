@@ -4,6 +4,14 @@ const db = firebase.collection("/Users");
 const rolesCollection = firebase.collection("/Roles");
 
 class UsersService {
+  getAll() {
+    return db;
+  }
+
+  getAllRoles() {
+    return rolesCollection;
+  }
+
   getByUID(id) {
     return db.doc(id);
   }
@@ -18,6 +26,10 @@ class UsersService {
 
   update(id, value) {
     return db.doc(id).update(value);
+  }
+
+  updateRole(id, value) {
+    return rolesCollection.doc(id).update(value);
   }
 
   delete(id) {

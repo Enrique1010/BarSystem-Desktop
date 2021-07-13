@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Button, Image } from "antd";
+import { Image } from "antd";
 import Layout, { Content, Footer } from "antd/lib/layout/layout";
 import Sider from "antd/lib/layout/Sider";
 import OrderComponent from "../Orders/OrderComponent";
 import CustomSidebar from "./CustomSidebar";
-import mainLogo from "../../logo.jpg";
+import mainLogo from "../../logo.jpeg";
 import { Route, Switch, useHistory } from "react-router-dom";
 import {
   ROUTE_ADD_PRODUCT,
@@ -14,6 +14,7 @@ import {
   ROUTE_ORDERS,
   ROUTE_ORDERS_DONE,
   ROUTE_ORDERS_OPEN,
+  ROUTE_USERS,
 } from "./Routes";
 import ProductComponent from "../Products/ProductComponent";
 import styled from "styled-components";
@@ -23,8 +24,8 @@ import OrderList from "../Orders/OrderList";
 import OpenOrderComponent from "../Orders/OpenOrderComponent";
 import firebase from "firebase";
 import { StyledFirebaseAuth } from "react-firebaseui";
-import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import UsersService from "../services/Users.service";
+import UsersComponent from "../Users/UsersComponent";
 
 // Configure FirebaseUI.
 const uiConfig = {
@@ -40,7 +41,6 @@ const AppLayout = () => {
   const history = useHistory();
   const [isSignedIn, setIsSignedIn] = useState(false); // Local signed-in state.
   const [currentUser, setCurrentUser] = useState(undefined);
-  const [collapsed, setCollapsed] = useState(false);
   const [userRolesForbiddenActions, setUserRolesForbiddenActions] = useState(
     []
   );
@@ -64,19 +64,21 @@ const AppLayout = () => {
             // Recibir el rol
             UsersService.getRole(usr.data().role).onSnapshot((roles) => {
               if (!!roles) {
-                const foundRole = roles.docs.find((r) => r.data().role === usr.data().role).data();
+                const foundRole = roles.docs
+                  .find((r) => r.data().role === usr.data().role)
+                  .data();
                 setUserRolesForbiddenActions(foundRole.forbidden);
               }
             });
           } else {
             // Crear usuario y asignar rol
-            let date = new Date().toLocaleString([], { hour12: true});
+            let date = new Date().toLocaleString([], { hour12: true });
             const newUser = createUser(
               currentUser.email,
               currentUser.displayName,
               "pending",
               currentUser.uid,
-              date,
+              date
             );
             if (!!currentUser.uid) {
               UsersService.create(newUser);
@@ -105,30 +107,19 @@ const AppLayout = () => {
     history.push(ROUTE_AUTH);
   };
 
-  const toggleCollapsed = () => {
-    setCollapsed(!collapsed);
-  };
-
   return (
-    <Store>
+    <Store style={{ maxHeight: "100vh" }}>
       <Layout>
         <Sider>
           <Image
             src={mainLogo}
-            style={{ height: "64px", padding: "12px", marginBottom: "32px" }}
+            style={{ height: "auto" }}
           />
           <CustomSidebar
             isSignedIn={isSignedIn}
             userForbiddenActions={userRolesForbiddenActions}
           />
         </Sider>
-        {/* <Button
-          type="primary"
-          onClick={toggleCollapsed}
-          style={{ marginBottom: 16 }}
-        >
-          {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-        </Button> */}
         {!isSignedIn ? (
           <LoginForm>
             <h1>Iniciar Sesión</h1>
@@ -166,6 +157,10 @@ const AppLayout = () => {
               {redirectAuth}
               <ProductForm />
             </Route>
+            <Route exact path={ROUTE_USERS}>
+              {redirectAuth}
+              <UsersComponent />
+            </Route>
             <Route exact path={ROUTE_LOG_OUT}>
               {logOut}
             </Route>
@@ -176,11 +171,15 @@ const AppLayout = () => {
   );
 };
 
-export const CustomLayout = styled(Layout)``;
+export const CustomLayout = styled(Layout)`
+  max-height: 100vh;
+`;
 
 export const CustomContent = styled(Content)`
   margin: 24px 16px 0;
   color: white;
+  max-height: 100%;
+  overflow: auto;
 `;
 
 export const CustomFooter = () => {
@@ -193,7 +192,7 @@ export const CustomFooter = () => {
 
 export const LoginForm = styled.div`
   width: 100%;
-  height: 100%;
+  height: 100vh;
   align-self: CENTER;
   margin: 10px;
   padding: 10px;
@@ -206,7 +205,7 @@ const createUser = (email, name, role, uid, date) => {
     role: role,
     uid: uid,
     date: date,
-  };  
+  };
 };
 
 export default AppLayout;

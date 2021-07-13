@@ -7,7 +7,9 @@ import {
   PageHeader,
   Table,
   Input,
+  Select,
 } from "antd";
+import { Option } from "antd/lib/mentions";
 import Modal from "antd/lib/modal/Modal";
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router";
@@ -45,7 +47,7 @@ const columns = [
     title: "Rol",
     dataIndex: "role",
     key: "role",
-    render: (record) => (<span>{parseRole(record)}</span>),
+    render: (record) => <span>{parseRole(record)}</span>,
   },
 ];
 
@@ -54,21 +56,29 @@ export const buildUserObject = (item) => {
   let data = item.data();
   return {
     email: data.email,
-    userName: data.name,
+    userName: data.userName,
     role: data.role,
     uid: data.uid,
     date: data.date,
-  };  
+  };
+};
+
+export const buildRoleObject = (item) => {
+  let data = item.data();
+  return {
+    role: data.role,
+    forbidden: data.forbidden,
+  };
 };
 
 const UsersComponent = () => {
   const [users, setUsers] = useState([]);
+  const [roles, setRoles] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
-  const [nameFilter, setNameFilter] = useState('');
-  const [newSupply, setNewSupply] = useState(0);
+  const [nameFilter, setNameFilter] = useState("");
+  const [newRole, setNewRole] = useState("");
   const [modal, contextHolder] = Modal.useModal();
   const [messageHolder] = message.useMessage();
-  const history = useHistory();
 
   const tableColumns = () => {
     let cols = [
@@ -80,7 +90,7 @@ const UsersComponent = () => {
         render: (record) => (
           <>
             <Button
-              // onClick={() => onEdit(record)}
+              onClick={() => onEdit(record)}
               style={{ marginRight: "12px" }}
             >
               <EditOutlined />
@@ -88,8 +98,10 @@ const UsersComponent = () => {
 
             <Popconfirm
               placement="top"
-              title={"¿Desea Eliminar esta Usuario? Se perderán todos los accesos de inmediato."}
-              onConfirm={() => onDelete(record.id)}
+              title={
+                "¿Desea Eliminar esta Usuario? Se perderán todos los accesos de inmediato."
+              }
+              onConfirm={() => onDelete(record.uid)}
               okText="Si"
               cancelText="No"
             >
@@ -113,7 +125,7 @@ const UsersComponent = () => {
         setNameFilter(filter);
         if (filter.trim() !== "") {
           const filteredData = users.filter((usr) =>
-            usr.name.includes(filter)
+            usr.userName.toLowerCase().includes(filter.toLocaleLowerCase())
           );
           setFilteredUsers(filteredData);
         } else {
@@ -123,41 +135,41 @@ const UsersComponent = () => {
     />
   );
 
-  // const AddProductConfig = (e) => {
-  //   return {
-  //     title: "Agregando Producto...",
-  //     content: (
-  //       <div>
-  //         <p>Suministro Actual: {e.supply}</p>
-  //         <br />
-  //         <p>Nuevo Suministro: </p>
-  //         <InputNumber
-  //           min={1}
-  //           max={10000}
-  //           defaultValue={0}
-  //           onChange={setNewSupply}
-  //           style={{ marginRight: "10px" }}
-  //         />
-  //         <Button
-  //           onClick={() => updateCurrentElementSupply(e)}
-  //           disabled={!newSupply < 0}
-  //         >
-  //           Agregar
-  //         </Button>
-  //       </div>
-  //     ),
-  //   };
-  // };
+  const EditUserConfig = (e) => {
+    return {
+      title: "Editar Role de Usuario...",
+      content: (
+        <div>
+          <p> Cambiar el Rol del Usuario </p>
+          <Select
+            style={{ width: 200 }}
+            placeholder="Seleccione un rol"
+            optionFilterProp="children"
+            defaultValue="disable"
+            onChange={(value, event) => {setNewRole(value); console.log(value)}}
+          >
+            {roles.map((r, i) => (
+              <Option key={i} value={r.role}>{r.role}</Option>
+            ))}
+          </Select>
+          ,
+          <Button
+            onClick={() => updateCurrentUserRole(e)}
+          >
+            Cambiar
+          </Button>
+        </div>
+      ),
+    };
+  };
 
   useEffect(() => {
-    UsersService.getAll()
-      .orderBy("userName", "asc")
-      .onSnapshot(onDataChange);
+    UsersService.getAll().orderBy("userName", "asc").onSnapshot(onDataChange);
+    UsersService.getAllRoles().onSnapshot(onRolesDataChange);
   }, []);
 
   const onDataChange = (items) => {
     let current = [];
-
     items.forEach((item) => {
       let val = buildUserObject(item);
       current.push(val);
@@ -165,35 +177,43 @@ const UsersComponent = () => {
     setUsers(current);
   };
 
-  // const showEditModal = (e) => {
-  //   modal.info(AddProductConfig(e));
-  // };
+  const onRolesDataChange = (items) => {
+    let current = [];
+    items.forEach((item) => {
+      let val = buildUserObject(item);
+      current.push(val);
+    });
+    setRoles(current);
+  };
 
-  // const updateCurrentElementSupply = (e) => {
-  //   let newElement = e;
-  //   newElement["newSupply"] = newSupply;
-  //   newElement["olderSupply"] = newElement.supply;
-  //   newElement["supply"] = newElement.supply + newSupply;
-  //   ProductsDataService.update(newElement.id, newElement);
-  //   showUpdateInfo(newElement.name, newSupply);
-  //   modal.destroy();
-  // };
+  const showEditModal = (e) => {
+    modal.info(EditUserConfig(e));
+  };
 
-  // const onEdit = (element) => {
-  //   showEditModal(element);
-  // };
+  const updateCurrentUserRole = (e) => {
+    let newElement = e;
+    newElement["role"] = newRole;
+    UsersService.update(newElement.uid, newElement);
+    console.log(newElement, newRole);
+    showUpdateInfo(newElement.userName, newRole);
+    modal.destroy();
+  };
+
+  const onEdit = (element) => {
+    showEditModal(element);
+  };
 
   const onDelete = (key) => {
     UsersService.delete(key);
   };
 
-  // const showUpdateInfo = (name, supply) => {
-  //   messageHolder.open({
-  //     type: "info",
-  //     content: `Producto: ${name} se agregó un suministro de ${supply}`,
-  //     duration: 3,
-  //   });
-  // };
+  const showUpdateInfo = (name, role) => {
+    messageHolder.open({
+      type: "info",
+      content: `El Usuario ${name} ahora tiene el rol de ${role}`,
+      duration: 3,
+    });
+  };
 
   return (
     <CustomLayout>
@@ -201,17 +221,13 @@ const UsersComponent = () => {
         ghost={false}
         title={APP_NAME}
         subTitle={INVENTORY_NAME}
-        extra={[
-          <Button key="2">Exportar</Button>,
-          <Button key="1" type="primary" onClick={createProduct}>
-            Nuevo Producto
-          </Button>,
-        ]}
       ></PageHeader>
       <CustomContent>
         {FilterByNameInput}
         <PTable
-          dataSource={!!filteredUsers && filteredUsers.length > 0 ? filteredUsers : users}
+          dataSource={
+            !!filteredUsers && filteredUsers.length > 0 ? filteredUsers : users
+          }
           columns={tableColumns()}
         />
       </CustomContent>

@@ -9,13 +9,13 @@ export const PRODUCTS_CREATE = "PRODUCTS_CREATE";
 export const PRODUCTS_DELETE = "PRODUCTS_DELETE";
 
 export const ORDERS_ALL = "ORDERS_ALL";
+export const ORDERS_READ = "ORDERS_READ";
 
 //  USERS ROLES
 
 // This function extract userRolesForbiddenActions (Array) from currentUser and try matches the requiered (String) action
 // if requiered action was found should mean that the function will be disabled or something.
 export const findRequiredAction = (userRolesForbiddenActions, required) => {
-  console.log(userRolesForbiddenActions);
   if (!!userRolesForbiddenActions && !!required) {
     const found = userRolesForbiddenActions.find((a) => a === required);
     if (!!found) {
@@ -35,11 +35,19 @@ export const validateRoleActions = (userRolesForbiddenActions, required) => {
 };
 
 export const parseRole = (role) => {
-  var newRole = "";
-  if (role === "pending") newRole = "Sin asignar";
-  else if (role === "admin") newRole = "Administrador";
-  else if (role === "waiter") newrole = "Mesero";
-  else if (role === "bartender") newrole = "Bartender";
-  
-  return newrole;
+  let newRole = "";
+  if (role === "pending") {
+    newRole = "Sin asignar";
+  }
+  else if (role === "admin") {
+    newRole = "Administrador";
+  }
+  else if (role === "waiter") {
+    newRole = "Mesero";
+  }
+  else if (role === "bartender") {
+    newRole = "Bartender";
+  }
+
+  return newRole;
 };
