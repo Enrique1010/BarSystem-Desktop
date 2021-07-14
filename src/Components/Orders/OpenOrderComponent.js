@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from "react";
-import {
-  Popconfirm,
-  Alert,
-  Button,
-  Card,
-  Collapse,
-  message,
-  PageHeader,
-} from "antd";
+import { Popconfirm, Alert, Button, Collapse, message, PageHeader } from "antd";
+import { CheckCircleOutlined, CheckCircleTwoTone } from "@ant-design/icons";
 import { APP_NAME, ORDER_NAME } from "../../DefaultProps";
 import { CustomContent, CustomLayout } from "../navigation/AppLayout";
 import styled from "styled-components";
+import {
+  OrderCard,
+  OrderCardWrapper,
+  openFrame,
+  buildOrderObject,
+  orderTitle,
+  totalPrice,
+} from "./OrderComponent";
+import Invoice, { InvoiceElement } from "../invoice/Invoice";
 import OrdersDataService from "../services/Orders.service";
 import Text from "antd/lib/typography/Text";
-import Invoice, { InvoiceElement, RawInvoiceStyle } from "../invoice/Invoice";
 import ProductsDataService from "../services/Products.service";
 import { buildProductObject } from "../Products/ProductComponent";
 
@@ -22,88 +23,29 @@ const PENDING_STATE = false;
 
 const { Panel } = Collapse;
 
-export const OrderCardWrapper = styled.div`
-  width: 100%;
-  height: auto;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-`;
-
-export const OrderCard = styled(Card)`
-  width: auto;
-  height: min-content;
-  min-width: 300px;
-  margin: 20px;
-  background: rgb(245, 245, 245);
-  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.08);
-  flex: 1 0 500px;
-  box-sizing: border-box;
-  margin: 1rem 0.25em;
-  @media screen and (min-width: 40em) {
-    .card {
-      max-width: calc(50% - 1em);
-    }
-  }
-
-  @media screen and (min-width: 60em) {
-    .card {
-      max-width: calc(25% - 1em);
-    }
-  }
-`;
-
-export const orderTitle = (number, name) => (
-  <span>
-    <span>Orden: {number}</span>
-    <br />
-    <span>Nombre del cliente: {name}</span>
-  </span>
-);
-
-export const openFrame = () => {
-  var divContents = document.getElementById("OrderInvoice").innerHTML;
-  var a = window.open("", "", "height=300, width=500");
-  a.document.write("<html>");
-  a.document.write(`<body style="${RawInvoiceStyle}">`);
-  a.document.write(divContents);
-  a.document.write("</body></html>");
-  a.document.close();
-  a.print();
-};
-
-export const totalPrice = (order) => {
-  let total = 0.0;
-  if (!!order.products)
-    order.products.forEach((prod) => {
-      total += prod.price * prod.amount;
-    });
-  return total;
-};
-
-export const SplitterWrapper = styled.div`
+const SplitterWrapper = styled.div`
   display: grid;
   grid-template-columns: auto auto;
 `;
 
-export const OrderElementsWrapper = styled.div`
+const OrderElementsWrapper = styled.div`
   text-align: left;
   justify-content: space-evenly;
 `;
 
-export const StateAlert = styled(Alert)`
+const StateAlert = styled(Alert)`
   width: 170px;
   margin-bottom: 12px;
 `;
 
-const OrderComponent = () => {
+const OpenOrderComponent = () => {
   const [orders, setOrders] = useState([]);
   const [products, setProducts] = useState([]);
   const [invoiceOrder, setInvoiceOrder] = useState(undefined);
 
   useEffect(() => {
     // Retrieve Orders data from firebase colletion
-    OrdersDataService.getPending().onSnapshot(onDataChange);
+    OrdersDataService.getOpen().onSnapshot(onDataChange);
     ProductsDataService.getAll().onSnapshot(onProductChange);
   }, []);
 
@@ -167,6 +109,17 @@ const OrderComponent = () => {
     }
   };
 
+  const completeProduct = async (order, productIndex) => {
+    let prod = order.products[productIndex];
+    if (!!prod) {
+      prod["ready"] = true;
+      order.products[productIndex] = prod;
+      updateOrder(order);
+    } else {
+      message.error("No se pudo completar el pedido");
+    }
+  };
+
   const calculateOrder = (order) => {
     order.products.forEach((prod) => {
       let newProd = products.find((x) => x.productCode === prod.productCode);
@@ -199,7 +152,7 @@ const OrderComponent = () => {
                     <br />
                     <Text type="success">
                       Vasos: {order.cups ? "Si" : "No"}
-                    </Text>
+                    </Text>{" "}
                     <br />
                     <Text type="success">Mesero: {order.waiterName}</Text>
                   </p>
@@ -210,6 +163,7 @@ const OrderComponent = () => {
                   ) : (
                     <>
                       <StateAlert message="Pendiente" type="warning" showIcon />
+                      {/* Required functionality */}
 
                       <Popconfirm
                         placement="top"
@@ -231,7 +185,7 @@ const OrderComponent = () => {
                   )}
                 </OrderElementsWrapper>
               </SplitterWrapper>
-              <Collapse defaultActiveKey={["0"]}>
+              <Collapse defaultActiveKey={["1"]}>
                 <Panel header="Pedidos" key="1">
                   {order.products.map((prod, index) => (
                     <p>
@@ -239,7 +193,14 @@ const OrderComponent = () => {
                         {index + 1}- {prod.name}{" "}
                       </Text>
                       <Text type="success">${prod.price}</Text>
-                      <Text> x{prod.amount}</Text>
+                      <Text> x{prod.amount} </Text>
+                      {prod.ready ? (
+                        <CheckCircleTwoTone twoToneColor="#52c41a" />
+                      ) : (
+                        <Button onClick={() => completeProduct(order, index)}>
+                          <CheckCircleOutlined />
+                        </Button>
+                      )}
                     </p>
                   ))}
                 </Panel>
@@ -261,42 +222,4 @@ const OrderComponent = () => {
   );
 };
 
-// Build Order Object from firestore collection item
-export const buildOrderObject = (item) => {
-  let data = item.data();
-  return {
-    id: item.id,
-    orderNumber: data.orderNumber,
-    openOrder: data.openOrder,
-    clientName: data.clientName,
-    currentState: data.currentState,
-    date: data.date,
-    products: data.products,
-    table: data.table,
-    cups: data.cups,
-    ice: data.ice,
-    uid: data.uid,
-    waiterName: data.waiterName,
-  };
-};
-
-export const buildOrderObjectWithProductFormatted = (item) => {
-  let data = item.data();
-  let newDate = new Date(data.date).toLocaleDateString();
-  return {
-    id: item.id,
-    orderNumber: data.orderNumber,
-    openOrder: data.openOrder,
-    clientName: data.clientName,
-    currentState: data.currentState,
-    date: newDate,
-    products: data.products.length,
-    table: data.table,
-    cups: data.cups,
-    ice: data.ice,
-    uid: data.uid,
-    waiterName: data.waiterName,
-  };
-};
-
-export default OrderComponent;
+export default OpenOrderComponent;

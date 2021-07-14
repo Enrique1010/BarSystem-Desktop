@@ -6,6 +6,19 @@ class OrdersDataService {
   getAll() {
     return db;
   }
+  
+  getPending() {
+    return db
+    .where("currentState", "==", false)
+    .where("openOrder", "==", false)
+    .orderBy("date", "desc");
+  }
+  
+  getOpen() {
+    return  db
+    .where("currentState", "==", false)
+    .where("openOrder", "==", true);
+  }
 
   create(order) {
     return db.add(order);
