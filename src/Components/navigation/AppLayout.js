@@ -99,10 +99,6 @@ const AppLayout = () => {
     }
   };
 
-  const redirectOrders = () => {
-    history.push(ROUTE_ORDERS);
-  };
-
   const logOut = () => {
     firebase.auth().signOut();
     history.push(ROUTE_AUTH);
