@@ -22,15 +22,16 @@ import ProductForm from "../Products/ProductForm";
 import Store from "../../commonStore";
 import OrderList from "../Orders/OrderList";
 import OpenOrderComponent from "../Orders/OpenOrderComponent";
-import firebase from "firebase";
+// import firebase from "firebase";
 import { StyledFirebaseAuth } from "react-firebaseui";
 import UsersService from "../services/Users.service";
 import UsersComponent from "../Users/UsersComponent";
+import firebase from "firebase";
 
 // Configure FirebaseUI.
 const uiConfig = {
   // Popup signin flow rather than redirect flow.
-  signInFlow: "redirect",
+  signInFlow: "popup",
   // Redirect to /signedIn after sign in is successful. Alternatively you can provide a callbacks.signInSuccess function.
   signInSuccessUrl: "/",
   // We will display Google and Facebook as auth providers.
@@ -44,6 +45,7 @@ const AppLayout = () => {
   const [userRolesForbiddenActions, setUserRolesForbiddenActions] = useState(
     []
   );
+  firebase.auth().signInAnonymously();
 
   // Listen to the Firebase Auth state and set the local state.
   useEffect(() => {
@@ -111,10 +113,7 @@ const AppLayout = () => {
     <Store style={{ maxHeight: "100vh" }}>
       <Layout>
         <Sider>
-          <Image
-            src={mainLogo}
-            style={{ height: "auto" }}
-          />
+          <Image src={mainLogo} style={{ height: "auto" }} />
           <CustomSidebar
             isSignedIn={isSignedIn}
             userForbiddenActions={userRolesForbiddenActions}
