@@ -8,7 +8,6 @@ import {
   Table,
   Input,
 } from "antd";
-// import Highlighter from 'react-highlight-words';
 import Modal from "antd/lib/modal/Modal";
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router";
@@ -79,7 +78,7 @@ export const buildProductObject = (item) => {
 const ProductComponent = () => {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
-  const [nameFilter, setNameFilter] = useState('');
+  const [nameFilter, setNameFilter] = useState("");
   const [newSupply, setNewSupply] = useState(0);
   const [modal, contextHolder] = Modal.useModal();
   const [messageHolder] = message.useMessage();
@@ -128,7 +127,7 @@ const ProductComponent = () => {
         setNameFilter(filter);
         if (filter.trim() !== "") {
           const filteredData = products.filter((prd) =>
-            prd.name.includes(filter)
+            prd.name.toLocaleLowerCase().includes(filter.toLocaleLowerCase())
           );
           setFilteredProducts(filteredData);
         } else {
@@ -230,7 +229,11 @@ const ProductComponent = () => {
       <CustomContent>
         {FilterByNameInput}
         <PTable
-          dataSource={!!filteredProducts && filteredProducts.length > 0 ? filteredProducts : products}
+          dataSource={
+            !!filteredProducts && filteredProducts.length > 0
+              ? filteredProducts
+              : products
+          }
           columns={tableColumns()}
         />
       </CustomContent>

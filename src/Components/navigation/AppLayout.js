@@ -31,7 +31,7 @@ import firebase from "firebase";
 // Configure FirebaseUI.
 const uiConfig = {
   // Popup signin flow rather than redirect flow.
-  signInFlow: "popup",
+  signInFlow: "redirect",
   // Redirect to /signedIn after sign in is successful. Alternatively you can provide a callbacks.signInSuccess function.
   signInSuccessUrl: "/",
   // We will display Google and Facebook as auth providers.
@@ -45,7 +45,6 @@ const AppLayout = () => {
   const [userRolesForbiddenActions, setUserRolesForbiddenActions] = useState(
     []
   );
-  firebase.auth().signInAnonymously();
 
   // Listen to the Firebase Auth state and set the local state.
   useEffect(() => {
@@ -133,7 +132,13 @@ const AppLayout = () => {
             {/* ORDERS AND EACH STATUS FILTER */}
             <Route exact path="/">
               {redirectAuth}
-              {redirectOrders}
+              <spam style={{ margin: "30%", alignText: "center" }}>
+                <h1>
+                  Bienvenido a <b>11:11 Administrativo</b>
+                </h1>
+                <br />
+                Elija una opción para ir a otra pantalla en el menú lateral.
+              </spam>
             </Route>
             <Route exact path={ROUTE_ORDERS}>
               {redirectAuth}
