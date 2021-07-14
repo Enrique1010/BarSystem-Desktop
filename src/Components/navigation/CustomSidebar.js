@@ -106,7 +106,7 @@ const CustomSidebar = ({ isSignedIn, userForbiddenActions }) => {
             icon={<CloseOutlined />}
             onClick={() => handleClick(ROUTE_LOG_OUT)}
           >
-            Salir
+            Cerrar Sesión
           </Menu.Item>{" "}
         </>
       ) : (
