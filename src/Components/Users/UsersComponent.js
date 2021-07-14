@@ -3,21 +3,17 @@ import {
   Popconfirm,
   message,
   Button,
-  InputNumber,
   PageHeader,
   Table,
   Input,
   Select,
 } from "antd";
-import { Option } from "antd/lib/mentions";
 import Modal from "antd/lib/modal/Modal";
+import { Option } from "antd/lib/mentions";
 import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router";
 import styled from "styled-components";
 import { APP_NAME, INVENTORY_NAME } from "../../DefaultProps";
 import { CustomContent, CustomLayout } from "../navigation/AppLayout";
-import { ROUTE_ADD_PRODUCT } from "../navigation/Routes";
-import ProductsDataService from "../services/Products.service";
 import UsersService from "../services/Users.service";
 import { parseRole } from "./users.config";
 
@@ -76,7 +72,8 @@ const UsersComponent = () => {
   const [roles, setRoles] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [nameFilter, setNameFilter] = useState("");
-  const [newRole, setNewRole] = useState("");
+  const [newRole, setNewRole] = useState("disabled");
+  const [newUser, setNewUser] = useState(undefined);
   const [modal, contextHolder] = Modal.useModal();
   const [messageHolder] = message.useMessage();
 
@@ -146,18 +143,15 @@ const UsersComponent = () => {
             placeholder="Seleccione un rol"
             optionFilterProp="children"
             defaultValue="disable"
-            onChange={(value, event) => {setNewRole(value); console.log(value)}}
+            onChange={setNewRole}
           >
             {roles.map((r, i) => (
-              <Option key={i} value={r.role}>{r.role}</Option>
+              <Option key={i} value={r.role}>
+                {r.role}
+              </Option>
             ))}
           </Select>
-          ,
-          <Button
-            onClick={() => updateCurrentUserRole(e)}
-          >
-            Cambiar
-          </Button>
+          {/* <Button onClick={() => updateCurrentUserRole(e)}>Cambiar</Button> */}
         </div>
       ),
     };
@@ -167,6 +161,12 @@ const UsersComponent = () => {
     UsersService.getAll().orderBy("userName", "asc").onSnapshot(onDataChange);
     UsersService.getAllRoles().onSnapshot(onRolesDataChange);
   }, []);
+
+  useEffect(() => {
+    if (!!newUser) {
+      updateCurrentUserRole(newUser);
+    }
+  }, [newRole]);
 
   const onDataChange = (items) => {
     let current = [];
@@ -187,15 +187,17 @@ const UsersComponent = () => {
   };
 
   const showEditModal = (e) => {
+    setNewUser(e);
     modal.info(EditUserConfig(e));
   };
 
   const updateCurrentUserRole = (e) => {
     let newElement = e;
     newElement["role"] = newRole;
+    console.log(e);
     UsersService.update(newElement.uid, newElement);
-    console.log(newElement, newRole);
-    showUpdateInfo(newElement.userName, newRole);
+    // showUpdateInfo(newElement.userName, newElement.role);
+    setNewUser(undefined);
     modal.destroy();
   };
 

@@ -10,6 +10,7 @@
 
 # production
 /build
+/11-11_barsystem_desktop-win32-x64
 
 # misc
 .DS_Store
