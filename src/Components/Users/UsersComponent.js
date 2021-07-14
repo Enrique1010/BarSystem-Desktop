@@ -1,12 +1,12 @@
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import {
   Popconfirm,
-  message,
   Button,
   PageHeader,
   Table,
   Input,
   Select,
+  message,
 } from "antd";
 import Modal from "antd/lib/modal/Modal";
 import { Option } from "antd/lib/mentions";
@@ -75,7 +75,6 @@ const UsersComponent = () => {
   const [newRole, setNewRole] = useState("disabled");
   const [newUser, setNewUser] = useState(undefined);
   const [modal, contextHolder] = Modal.useModal();
-  const [messageHolder] = message.useMessage();
 
   const tableColumns = () => {
     let cols = [
@@ -151,7 +150,6 @@ const UsersComponent = () => {
               </Option>
             ))}
           </Select>
-          {/* <Button onClick={() => updateCurrentUserRole(e)}>Cambiar</Button> */}
         </div>
       ),
     };
@@ -196,9 +194,8 @@ const UsersComponent = () => {
     newElement["role"] = newRole;
     console.log(e);
     UsersService.update(newElement.uid, newElement);
-    // showUpdateInfo(newElement.userName, newElement.role);
+    showUpdateInfo(newElement.userName, newElement.role);
     setNewUser(undefined);
-    modal.destroy();
   };
 
   const onEdit = (element) => {
@@ -210,11 +207,7 @@ const UsersComponent = () => {
   };
 
   const showUpdateInfo = (name, role) => {
-    messageHolder.open({
-      type: "info",
-      content: `El Usuario ${name} ahora tiene el rol de ${role}`,
-      duration: 3,
-    });
+    message.info(`El Usuario ${name} ahora tiene el rol de ${role}`);
   };
 
   return (

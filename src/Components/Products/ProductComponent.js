@@ -1,12 +1,12 @@
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import {
   Popconfirm,
-  message,
   Button,
   InputNumber,
   PageHeader,
   Table,
   Input,
+  message,
 } from "antd";
 import Modal from "antd/lib/modal/Modal";
 import React, { useEffect, useState } from "react";
@@ -80,8 +80,8 @@ const ProductComponent = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [nameFilter, setNameFilter] = useState("");
   const [newSupply, setNewSupply] = useState(0);
-  const [modal, contextHolder] = Modal.useModal();
-  const [messageHolder] = message.useMessage();
+  const [newProduct, setNewProduct] = useState(undefined);
+  const [visible, setVisible] = useState(false);
   const history = useHistory();
 
   const tableColumns = () => {
@@ -137,37 +137,14 @@ const ProductComponent = () => {
     />
   );
 
-  const AddProductConfig = (e) => {
-    return {
-      title: "Agregando Producto...",
-      content: (
-        <div>
-          <p>Suministro Actual: {e.supply}</p>
-          <br />
-          <p>Nuevo Suministro: </p>
-          <InputNumber
-            min={1}
-            max={10000}
-            defaultValue={0}
-            onChange={setNewSupply}
-            style={{ marginRight: "10px" }}
-          />
-          <Button
-            onClick={() => updateCurrentElementSupply(e)}
-            disabled={!newSupply < 0}
-          >
-            Agregar
-          </Button>
-        </div>
-      ),
-    };
-  };
-
   useEffect(() => {
     ProductsDataService.getAll()
       .orderBy("name", "asc")
       .onSnapshot(onDataChange);
   }, []);
+
+  useEffect(() => {
+  }, [newSupply]);
 
   const onDataChange = (items) => {
     let current = [];
@@ -180,20 +157,26 @@ const ProductComponent = () => {
   };
 
   const showEditModal = (e) => {
-    modal.info(AddProductConfig(e));
+    setVisible(true);
   };
 
-  const updateCurrentElementSupply = (e) => {
-    let newElement = e;
-    newElement["newSupply"] = newSupply;
-    newElement["olderSupply"] = newElement.supply;
-    newElement["supply"] = newElement.supply + newSupply;
-    ProductsDataService.update(newElement.id, newElement);
-    showUpdateInfo(newElement.name, newSupply);
-    modal.destroy();
+  const updateCurrentElementSupply = () => {
+    if (!!newProduct) {
+      var newElement = newProduct;
+      newElement.newSupply = newSupply;
+      newElement.olderSupply = newElement.supply;
+      newElement.supply = newElement.supply + newSupply;
+      ProductsDataService.update(newElement.id, newElement);
+      showUpdateInfo(newElement.name, newSupply);
+      setVisible(false);
+      setNewProduct(undefined);
+    } else {
+      message.error('Error editando el producto: Intente nuevamente');
+    }
   };
 
   const onEdit = (element) => {
+    setNewProduct(element);
     showEditModal(element);
   };
 
@@ -206,11 +189,7 @@ const ProductComponent = () => {
   };
 
   const showUpdateInfo = (name, supply) => {
-    messageHolder.open({
-      type: "info",
-      content: `Producto: ${name} se agregó un suministro de ${supply}`,
-      duration: 3,
-    });
+    message.info(`Producto: ${name} se agregó un suministro de ${supply}`);
   };
 
   return (
@@ -236,8 +215,34 @@ const ProductComponent = () => {
           }
           columns={tableColumns()}
         />
+        <Modal
+          title="Agregando Producto..."
+          centered
+          visible={visible}
+          cancelText="Cerrar"
+          onOk={() => setVisible(false)}
+          onCancel={() => setVisible(false)}
+        >
+          <div>
+            <p>Suministro Actual: {!!newProduct ? newProduct.supply : 0}</p>
+            <br />
+            <p>Nuevo Suministro: </p>
+            <InputNumber
+              min={1}
+              max={10000}
+              defaultValue={0}
+              onChange={setNewSupply}
+              style={{ marginRight: "10px" }}
+            />
+            <Button
+              onClick={updateCurrentElementSupply}
+              disabled={!newSupply < 0}
+            >
+              Agregar
+            </Button>
+          </div>
+        </Modal>
       </CustomContent>
-      {contextHolder}
     </CustomLayout>
   );
 };
