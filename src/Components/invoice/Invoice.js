@@ -8,17 +8,17 @@ export const InvoiceElement = (order) => {
     prodList = order.products.map((prd) => (
       <tr class="service">
         <td class="tableitem">
-          <p style={{ fontSize: "9px", lineHeight: "1.2em" }} class="itemtext">
+          <p style={{ fontSize: "18px", lineHeight: "1.2em" }} class="itemtext">
             {prd.name}
           </p>
         </td>
         <td class="tableitem">
-          <p style={{ fontSize: "9px", lineHeight: "1.2em" }} class="itemtext">
+          <p style={{ fontSize: "18px", lineHeight: "1.2em" }} class="itemtext">
             x{prd.amount}
           </p>
         </td>
         <td class="tableitem">
-          <p style={{ fontSize: "9px", lineHeight: "1.2em" }} class="itemtext">
+          <p style={{ fontSize: "18px", lineHeight: "1.2em" }} class="itemtext">
             ${prd.price}.00
           </p>
         </td>
@@ -37,9 +37,7 @@ const Invoice = (props) => {
         <center id="top">
           <div class="logo"></div>
           <div class="info">
-            <h2 style={{ fontSize: "16px", fontWeight: 700 }}>
-              11:11
-            </h2>
+            <h2 style={{ fontSize: "16px", fontWeight: 700 }}>11:11</h2>
             <h2 style={{ fontSize: "16px", fontWeight: 700 }}>
               Live {"&"} Drink
             </h2>
@@ -48,18 +46,18 @@ const Invoice = (props) => {
 
         <div id="mid">
           <div class="info">
-            <h2 style={{ fontSize: "10px", fontWeight: 400 }}>Contacto</h2>
-            <p style={{ fontSize: "9px", fontWeight: 250 }}>
+            <h2 style={{ fontSize: "20px", fontWeight: 400 }}>Contacto</h2>
+            <p style={{ fontSize: "18px", fontWeight: 250 }}>
               Direccion : street city, state 0000
               <br />
               Email : 11.11live.drink@gmail.com
               <br />
             </p>
             <br />
-            <h2 style={{ fontSize: "10px", fontWeight: 400}}>
+            <h2 style={{ fontSize: "20px", fontWeight: 400 }}>
               Orden #{order.id}
             </h2>
-            <h2 style={{ fontSize: "10px", fontWeight: 250 }}>
+            <h2 style={{ fontSize: "20px", fontWeight: 250 }}>
               Mesa #{order.table}
             </h2>
           </div>
@@ -70,15 +68,35 @@ const Invoice = (props) => {
             <table width="100%">
               <tr class="tabletitle">
                 <td class="item">
-                  <h2 style={{ fontSize: "10px", fontWeight: 250, lineHeight: "2em" }}>
+                  <h2
+                    style={{
+                      fontSize: "20px",
+                      fontWeight: 250,
+                      lineHeight: "2em",
+                    }}
+                  >
                     <bold>Producto</bold>
                   </h2>
                 </td>
                 <td class="Hours">
-                  <h2 style={{ fontSize: "10px", fontWeight: 250, lineHeight: "2em", }}><bold>Cantidad</bold></h2>
+                  <h2
+                    style={{
+                      fontSize: "20px",
+                      fontWeight: 250,
+                      lineHeight: "2em",
+                    }}
+                  >
+                    <bold>Cantidad</bold>
+                  </h2>
                 </td>
                 <td class="Rate">
-                  <h2 style={{ fontSize: "10px", fontWeight: 250, lineHeight: "2em", }}>
+                  <h2
+                    style={{
+                      fontSize: "20px",
+                      fontWeight: 250,
+                      lineHeight: "2em",
+                    }}
+                  >
                     <bold>Sub Total</bold>
                   </h2>
                 </td>
@@ -90,10 +108,10 @@ const Invoice = (props) => {
               <tr class="tabletitle">
                 <td></td>
                 <td class="Rate">
-                  <h2 style={{ fontSize: "10px", fontWeight: 400 }}>Total</h2>
+                  <h2 style={{ fontSize: "20px", fontWeight: 400 }}>Total</h2>
                 </td>
                 <td class="payment">
-                  <h2 style={{ fontSize: "10px", fontWeight: 400 }}>
+                  <h2 style={{ fontSize: "20px", fontWeight: 400 }}>
                     ${total}.00
                   </h2>
                 </td>
@@ -102,8 +120,20 @@ const Invoice = (props) => {
           </div>
 
           <div id="legalcopy">
-            <p style={{ fontSize: "12px", lineHeight: "2em", textAlign: 'center'}} class="legal">
+            <p
+              style={{
+                fontSize: "24px",
+                lineHeight: "2em",
+                textAlign: "center",
+              }}
+              class="legal"
+            >
+              <strong>{order.clientName}</strong>
+              <br />
+              <br />
               <strong>¡Gracias por su comprar!</strong>
+              <br />
+              <br />
             </p>
           </div>
         </div>
@@ -115,16 +145,16 @@ const Invoice = (props) => {
 export default Invoice;
 
 export const StyledInvoice = styled.div`
-  padding: 2mm;
-  margin: 0 auto;
+  padding: 0;
+  margin: 0;
   width: 72mm;
   background: #fff;
   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
-  font-size: 9px;
+  font-size: 18px;
 
   h2 {
-    font-size: 9px;
+    font-size: 18px;
     font-weight: 250;
   }
 
@@ -135,7 +165,7 @@ export const StyledInvoice = styled.div`
   }
 
   p {
-    font-size: 9px;
+    font-size: 18px;
     line-height: 1.2em;
   }
 
@@ -191,7 +221,7 @@ export const StyledInvoice = styled.div`
 
   .tabletitle {
     padding: 2px;
-    font-size: 9px;
+    font-size: 18px;
   }
 
   .service {
@@ -203,7 +233,7 @@ export const StyledInvoice = styled.div`
   }
 
   .itemtext {
-    font-size: 9px;
+    font-size: 18px;
   }
 
   #legalcopy {
@@ -217,4 +247,4 @@ export const RawInvoiceStyle = `
     width: 72mm;
     background: #fff;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-    font-size: 9px;`;
+    font-size: 18px;`;

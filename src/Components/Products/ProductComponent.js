@@ -143,8 +143,7 @@ const ProductComponent = () => {
       .onSnapshot(onDataChange);
   }, []);
 
-  useEffect(() => {
-  }, [newSupply]);
+  useEffect(() => {}, [newSupply]);
 
   const onDataChange = (items) => {
     let current = [];
@@ -171,7 +170,7 @@ const ProductComponent = () => {
       setVisible(false);
       setNewProduct(undefined);
     } else {
-      message.error('Error editando el producto: Intente nuevamente');
+      message.error("Error editando el producto: Intente nuevamente");
     }
   };
 
@@ -199,7 +198,7 @@ const ProductComponent = () => {
         title={APP_NAME}
         subTitle={INVENTORY_NAME}
         extra={[
-          <Button key="2">Exportar</Button>,
+          // <Button key="2">Exportar</Button>,
           <Button key="1" type="primary" onClick={createProduct}>
             Nuevo Producto
           </Button>,
