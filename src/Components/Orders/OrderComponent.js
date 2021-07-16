@@ -16,6 +16,8 @@ import Text from "antd/lib/typography/Text";
 import Invoice, { InvoiceElement, RawInvoiceStyle } from "../invoice/Invoice";
 import ProductsDataService from "../services/Products.service";
 import { buildProductObject } from "../Products/ProductComponent";
+import { ROUTE_ADD_ORDER } from "../navigation/Routes";
+import { useHistory } from "react-router-dom";
 
 const DONE_STATE = true;
 const PENDING_STATE = false;
@@ -100,6 +102,7 @@ const OrderComponent = () => {
   const [orders, setOrders] = useState([]);
   const [products, setProducts] = useState([]);
   const [invoiceOrder, setInvoiceOrder] = useState(undefined);
+  const history = useHistory();
 
   useEffect(() => {
     // Retrieve Orders data from firebase colletion
@@ -176,12 +179,21 @@ const OrderComponent = () => {
     });
   };
 
+  const createOrder = () => {
+    history.push(ROUTE_ADD_ORDER);
+  };
+
   return (
     <CustomLayout>
       <PageHeader
         ghost={false}
         title={APP_NAME}
         subTitle={ORDER_NAME}
+        extra={[
+          <Button key="1" type="primary" onClick={createOrder}>
+            Nueva Orden
+          </Button>,
+        ]}
       ></PageHeader>
       <CustomContent>
         <OrderCardWrapper>
@@ -266,6 +278,23 @@ export const buildOrderObject = (item) => {
   let data = item.data();
   return {
     id: item.id,
+    orderNumber: data.orderNumber,
+    openOrder: data.openOrder,
+    clientName: data.clientName,
+    currentState: data.currentState,
+    date: data.date,
+    products: data.products,
+    table: data.table,
+    cups: data.cups,
+    ice: data.ice,
+    uid: data.uid,
+    waiterName: data.waiterName,
+  };
+};
+
+export const buildOrderWithoutDataObject = (data) => {
+  return {
+    id: data.id,
     orderNumber: data.orderNumber,
     openOrder: data.openOrder,
     clientName: data.clientName,

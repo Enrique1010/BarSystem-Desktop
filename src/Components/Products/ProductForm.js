@@ -27,7 +27,6 @@ const ProductForm = () => {
     values["olderSupply"] = 0;
     values["quantitySold"] = 0;
     ProductDataService.create(values);
-    console.log(values.name);
     openNotification(values.name);
     form.resetFields();
   };

@@ -7,6 +7,7 @@ import CustomSidebar from "./CustomSidebar";
 import mainLogo from "../../logo.jpeg";
 import { Route, Switch, useHistory } from "react-router-dom";
 import {
+  ROUTE_ADD_ORDER,
   ROUTE_ADD_PRODUCT,
   ROUTE_AUTH,
   ROUTE_INVENTORY,
@@ -27,6 +28,7 @@ import { StyledFirebaseAuth } from "react-firebaseui";
 import UsersService from "../services/Users.service";
 import UsersComponent from "../Users/UsersComponent";
 import firebase from "firebase";
+import OrderForm from "../Orders/OrderForm";
 
 // Configure FirebaseUI.
 const uiConfig = {
@@ -140,13 +142,17 @@ const AppLayout = () => {
               {redirectAuth}
               <OrderComponent />
             </Route>
-            <Route exact path={ROUTE_ORDERS_OPEN}>
+            {/* <Route exact path={ROUTE_ORDERS_OPEN}>
               {redirectAuth}
               <OpenOrderComponent />
-            </Route>
+            </Route> */}
             <Route exact path={ROUTE_ORDERS_DONE}>
               {redirectAuth}
               <OrderList />
+            </Route>
+            <Route exact path={ROUTE_ADD_ORDER}>
+              {redirectAuth}
+              <OrderForm />
             </Route>
             {/* OTHERS */}
             <Route exact path={ROUTE_INVENTORY}>

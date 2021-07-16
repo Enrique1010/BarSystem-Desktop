@@ -63,14 +63,14 @@ const CustomSidebar = ({ isSignedIn, userForbiddenActions }) => {
           >
             {ORDER_NAME}
           </Menu.Item>
-          <Menu.Item
+          {/* <Menu.Item
             key="2"
             icon={<TagsFilled />}
             onClick={() => handleClick(ROUTE_ORDERS_OPEN)}
             disabled={validateRoleActions(userForbiddenActions, [ORDERS_ALL, PRODUCTS_WRITE])}
           >
             {OPEN_ORDER_NAME}
-          </Menu.Item>
+          </Menu.Item> */}
           <Menu.Item
             key="3"
             icon={<TagsTwoTone />}
