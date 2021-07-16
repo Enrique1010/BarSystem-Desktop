@@ -37,8 +37,8 @@ const Invoice = (props) => {
         <center id="top">
           <div class="logo"></div>
           <div class="info">
-            <h2 style={{ fontSize: "16px", fontWeight: 700 }}>11:11</h2>
-            <h2 style={{ fontSize: "16px", fontWeight: 700 }}>
+            <h2 style={{ fontSize: "32px", fontWeight: 700 }}>11:11</h2>
+            <h2 style={{ fontSize: "32px", fontWeight: 700 }}>
               Live {"&"} Drink
             </h2>
           </div>
@@ -128,7 +128,7 @@ const Invoice = (props) => {
               }}
               class="legal"
             >
-              <strong>{order.clientName}</strong>
+              <strong style={{fontSize: "12px"}}>{order.clientName}</strong>
               <br />
               <br />
               <strong>¡Gracias por su comprar!</strong>
@@ -147,7 +147,7 @@ export default Invoice;
 export const StyledInvoice = styled.div`
   padding: 0;
   margin: 0;
-  width: 72mm;
+  width: 80mm;
   background: #fff;
   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
@@ -244,7 +244,7 @@ export const StyledInvoice = styled.div`
 export const RawInvoiceStyle = `
     padding: 2mm;
     margin: 0 auto;
-    width: 72mm;
+    width: 80mm;
     background: #fff;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-    font-size: 18px;`;
+    font-size: 36px;`;
