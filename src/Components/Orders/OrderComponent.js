@@ -172,6 +172,8 @@ const OrderComponent = () => {
 
   const calculateOrder = (order) => {
     order.products.forEach((prod) => {
+      console.log('dude wtf?', prod);
+      console.log('dude wtf?', products);
       let newProd = products.find((x) => x.productCode === prod.productCode);
       newProd["supply"] = newProd.supply - prod.amount;
       newProd["quantitySold"] = newProd.quantitySold + prod.amount;

@@ -84,7 +84,6 @@ const OrderForm = () => {
     let randomNumber = Math.round(Math.random() * (999 - 10) + 10);
     values["date"] = date;
     values["products"] = orderProducts;
-    values["products"] = orderProducts;
     values["openOrder"] = false;
     values["currentState"] = false;
     values["orderNumber"] =
@@ -100,6 +99,7 @@ const OrderForm = () => {
     values["ice"] = !!values.ice ? values.ice : false;
     values["cups"] = !!values.cups ? values.cups : false;
     values["clientName"] = "Cliente" + values.orderNumber;
+    console.log(values);
     let newOrder = buildOrderWithoutDataObject(values);
     OrdersService.create(newOrder);
     openNotification(newOrder.orderNumber);
@@ -113,6 +113,7 @@ const OrderForm = () => {
         let smallProd = {
           amount: amount,
           category: prd.category,
+          productCode: prd.productCode,
           name: prd.name,
           price: prd.price,
           ready: true,
