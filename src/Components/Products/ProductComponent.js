@@ -81,7 +81,7 @@ const ProductComponent = () => {
   const [nameFilter, setNameFilter] = useState("");
   const [newSupply, setNewSupply] = useState(0);
   const [newProduct, setNewProduct] = useState(undefined);
-  const [name, setName] = useState(undefined);
+  const [newName, setNewName] = useState(undefined);
   const [price, setPrice] = useState(undefined);
   const [visible, setVisible] = useState(false);
   const history = useHistory();
@@ -163,15 +163,20 @@ const ProductComponent = () => {
 
   const updateCurrentElementSupply = () => {
     if (!!newProduct) {
+      console.log(newProduct, " aSD ", price, newName);
       var newElement = newProduct;
-      newElement.newSupply = newSupply;
-      newElement.olderSupply = newElement.supply;
-      newElement.supply = newElement.supply + newSupply;
-      if (!!name) newElement.name = name; 
-      if (!!price) newElement.price = price; 
+      if (!!newSupply) {
+        newElement.newSupply = newSupply;
+        newElement.olderSupply = newElement.supply;
+        newElement.supply = newElement.supply + newSupply;
+      }
+      if (!!newName) newElement.name = newName;
+      if (!!price) newElement.price = price;
       ProductsDataService.update(newElement.id, newElement);
-      showUpdateInfo(newElement.name, newSupply);
+      showUpdateInfo(newElement.name);
       setVisible(false);
+      setPrice(undefined);
+      setNewName(undefined);
       setNewProduct(undefined);
     } else {
       message.error("Error editando el producto: Intente nuevamente");
@@ -191,8 +196,18 @@ const ProductComponent = () => {
     history.push(ROUTE_ADD_PRODUCT);
   };
 
-  const showUpdateInfo = (name, supply) => {
-    message.info(`Producto: ${name} se agregó un suministro de ${supply}`);
+  const showUpdateInfo = (name) => {
+    message.info(`Producto: ${name} ha sido actualizado`);
+  };
+
+  const putName = (name) => {
+    setNewName(name.target.value);
+  };
+
+  const closeModal = () => {
+    setNewName(undefined);
+    setPrice(undefined);
+    setVisible(false);
   };
 
   return (
@@ -222,29 +237,35 @@ const ProductComponent = () => {
           centered
           visible={visible}
           cancelText="Cerrar"
-          onOk={() => setVisible(false)}
-          onCancel={() => setVisible(false)}
+          onOk={closeModal}
+          onCancel={closeModal}
         >
           <div>
             <p>Suministro Actual: {!!newProduct ? newProduct.supply : 0}</p>
-            
+
             <br />
-            <p>Nuevo Nombre: </p>
-            <Input
-              defaultValue={newProduct.name}
-              onChange={setName}
-              style={{ marginRight: "10px" }}
-            />
-            <br />
-            <p>Nuevo Precio: </p>
-            <InputNumber
-              min={1}
-              max={10000}
-              defaultValue={newProduct.price}
-              onChange={setPrice}
-              style={{ marginRight: "10px" }}
-            />
-            <br />
+            {!!newProduct ? (
+              <>
+                <p>Nuevo Nombre: </p>
+                <Input
+                  defaultValue={newProduct.name}
+                  onChange={putName}
+                  style={{ marginRight: "10px" }}
+                />
+                <br />
+                <p>Nuevo Precio: </p>
+                <InputNumber
+                  min={1}
+                  max={999999}
+                  defaultValue={newProduct.price}
+                  onChange={setPrice}
+                  style={{ marginRight: "10px" }}
+                />
+                <br />
+              </>
+            ) : (
+              <></>
+            )}
             <p>Nuevo Suministro: </p>
             <InputNumber
               min={1}
@@ -255,9 +276,9 @@ const ProductComponent = () => {
             />
             <Button
               onClick={updateCurrentElementSupply}
-              disabled={!newSupply < 0}
+              disabled={!newSupply < 0 && !!newName && !!price}
             >
-              Agregar
+              Actualizar
             </Button>
           </div>
         </Modal>

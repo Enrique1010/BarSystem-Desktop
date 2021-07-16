@@ -8,6 +8,7 @@ import {
   Divider,
   Select,
   Switch,
+  Table,
 } from "antd";
 import { CustomContent, CustomLayout } from "../navigation/AppLayout";
 import { ADD_PRODUCT_NAME, APP_NAME } from "../../DefaultProps";
@@ -20,14 +21,32 @@ import { Option } from "antd/lib/mentions";
 import { buildOrderWithoutDataObject } from "./OrderComponent";
 import UsersService from "../services/Users.service";
 
+const columns = [
+  {
+    title: "Nombre",
+    dataIndex: "name",
+    key: "name",
+  },
+  {
+    title: "Cantidad",
+    dataIndex: "amount",
+    key: "amount",
+  },
+  {
+    title: "Precio",
+    dataIndex: "price",
+    key: "price",
+  },
+];
+
 const OrderForm = () => {
   const history = useHistory();
   const [form] = Form.useForm();
   const [products, setProducts] = useState([]);
   const [users, setUsers] = useState([]);
   const [orderProducts, setOrderProducts] = useState([]);
-  const [selectedProduct, setSelectedProduct] = useState(undefined);
-  const [amount, setAmount] = useState(undefined);
+  const [selectedProduct, setSelectedProduct] = useState("");
+  const [amount, setAmount] = useState(0);
 
   useEffect(() => {
     ProductsService.getAll().onSnapshot(onDataChange);
@@ -83,27 +102,33 @@ const OrderForm = () => {
     values["clientName"] = "Cliente" + values.orderNumber;
     let newOrder = buildOrderWithoutDataObject(values);
     OrdersService.create(newOrder);
-    openNotification(newOrder.name);
+    openNotification(newOrder.orderNumber);
     resetFields();
   };
 
   const addProductOrder = () => {
     if (!!selectedProduct && !!amount) {
       let prd = products.find((x) => x.productCode === selectedProduct);
-      let smallProd = {
-        amount: amount,
-        category: prd.category,
-        name: prd.name,
-        price: prd.price,
-        ready: true,
-        supply: prd.supply,
-      };
-      let newPrds = orderProducts;
-      newPrds.push(smallProd);
-      setOrderProducts(newPrds);
-      setSelectedProduct(undefined);
-      setAmount(undefined);
-      openProductNotification(smallProd.name);
+      if (!!prd) {
+        let smallProd = {
+          amount: amount,
+          category: prd.category,
+          name: prd.name,
+          price: prd.price,
+          ready: true,
+          supply: prd.supply,
+        };
+        let newPrds = orderProducts;
+        newPrds.push(smallProd);
+        setOrderProducts(newPrds);
+        form.resetFields(["productAmount", "selectedProduct"]);
+        setSelectedProduct("");
+        setAmount(0);
+        openProductNotification(smallProd.name);
+        console.log(orderProducts);
+      } else {
+        openNotProductsAddedNotification();
+      }
     }
   };
 
@@ -123,35 +148,12 @@ const OrderForm = () => {
     });
   };
 
-  const openProductsAddedNotification = () => {
-    notification.info({
-      message: `Producto Agregados:`,
-      description: `${orderProducts.forEach((prod) => (
-        <spam>
-          <h5>
-            {prod.name} ${prod.price} x{prod.amount}
-          </h5>
-          <br />
-        </spam>
-      ))}`,
-      placement: "bottomRight",
-    });
-  };
-
   const openNotProductsAddedNotification = () => {
     notification.warning({
       message: `Producto Agregados:`,
       description: `No hay productos agregados`,
       placement: "bottomRight",
     });
-  };
-
-  const showAddedProducts = () => {
-    if (!!orderProducts && orderProducts.length > 0) {
-      openProductsAddedNotification();
-    } else {
-      openNotProductsAddedNotification();
-    }
   };
 
   const backToOrders = () => {
@@ -161,10 +163,14 @@ const OrderForm = () => {
   const resetFields = () => {
     form.resetFields();
     setOrderProducts([]);
-    setSelectedProduct(undefined);
-    setAmount(undefined);
+    setSelectedProduct("");
+    setAmount(0);
   };
-
+  
+  // const getTable = (
+  //   <Table columns={columns} dataSource={!!orderProducts? orderProducts : []}></Table>
+  // );
+  
   return (
     <CustomLayout>
       <PageHeader
@@ -225,24 +231,17 @@ const OrderForm = () => {
           >
             <InputNumber min={0} style={{ minWidth: 150 }} />
           </Form.Item>
+          <div style={{display: 'flex'}}>
+            <Form.Item name="cups" label="Vasos">
+              <Switch />
+            </Form.Item>
 
-          <Form.Item name="cups" label="Vasos">
-            <Switch />
-          </Form.Item>
-
-          <Form.Item name="ice" label="Hielo">
-            <Switch />
-          </Form.Item>
+            <Form.Item name="ice" label="Hielo">
+              <Switch />
+            </Form.Item>
+          </div>
 
           <Divider />
-          <Button
-            type="secondary"
-            onClick={showAddedProducts}
-            style={{ minWidth: 100, marginRight: 10 }}
-          >
-            Ver Productos Agregados
-          </Button>
-          <br />
 
           <Form.Item name="selectedProduct" label="Productos">
             <Select
