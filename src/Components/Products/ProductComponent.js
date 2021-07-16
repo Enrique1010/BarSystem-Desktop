@@ -81,6 +81,8 @@ const ProductComponent = () => {
   const [nameFilter, setNameFilter] = useState("");
   const [newSupply, setNewSupply] = useState(0);
   const [newProduct, setNewProduct] = useState(undefined);
+  const [name, setName] = useState(undefined);
+  const [price, setPrice] = useState(undefined);
   const [visible, setVisible] = useState(false);
   const history = useHistory();
 
@@ -155,7 +157,7 @@ const ProductComponent = () => {
     setProducts(current);
   };
 
-  const showEditModal = (e) => {
+  const showEditModal = () => {
     setVisible(true);
   };
 
@@ -165,6 +167,8 @@ const ProductComponent = () => {
       newElement.newSupply = newSupply;
       newElement.olderSupply = newElement.supply;
       newElement.supply = newElement.supply + newSupply;
+      if (!!name) newElement.name = name; 
+      if (!!price) newElement.price = price; 
       ProductsDataService.update(newElement.id, newElement);
       showUpdateInfo(newElement.name, newSupply);
       setVisible(false);
@@ -176,7 +180,7 @@ const ProductComponent = () => {
 
   const onEdit = (element) => {
     setNewProduct(element);
-    showEditModal(element);
+    showEditModal();
   };
 
   const onDelete = (key) => {
@@ -198,7 +202,6 @@ const ProductComponent = () => {
         title={APP_NAME}
         subTitle={INVENTORY_NAME}
         extra={[
-          // <Button key="2">Exportar</Button>,
           <Button key="1" type="primary" onClick={createProduct}>
             Nuevo Producto
           </Button>,
@@ -224,6 +227,23 @@ const ProductComponent = () => {
         >
           <div>
             <p>Suministro Actual: {!!newProduct ? newProduct.supply : 0}</p>
+            
+            <br />
+            <p>Nuevo Nombre: </p>
+            <Input
+              defaultValue={newProduct.name}
+              onChange={setName}
+              style={{ marginRight: "10px" }}
+            />
+            <br />
+            <p>Nuevo Precio: </p>
+            <InputNumber
+              min={1}
+              max={10000}
+              defaultValue={newProduct.price}
+              onChange={setPrice}
+              style={{ marginRight: "10px" }}
+            />
             <br />
             <p>Nuevo Suministro: </p>
             <InputNumber
