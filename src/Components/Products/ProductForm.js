@@ -18,7 +18,7 @@ const ProductForm = () => {
   const [form] = Form.useForm();
 
   const onFinishForm = (values) => {
-    let date = new Date().toLocaleString([], { hour12: true});;
+    let date = new Date().toLocaleString(['la'], { hour12: true });
     values["registrationDate"] = date;
     values["lastRegistrationDate"] = date;
     values["dailySales"] = 0;

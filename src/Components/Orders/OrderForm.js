@@ -79,7 +79,7 @@ const OrderForm = () => {
 
   const onFinishForm = (values) => {
     let dateInstance = new Date();
-    let date = new Date().toLocaleString([], { hour12: true });
+    let date = new Date().toLocaleString(['la'], { hour12: true });
     let waiter = users.find((x) => x.uid === values.uid);
     let randomNumber = Math.round(Math.random() * (999 - 10) + 10);
     values["date"] = date;
