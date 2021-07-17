@@ -48,8 +48,6 @@ const Invoice = (props) => {
           <div class="info">
             <h2 style={{ fontSize: "20px", fontWeight: 400 }}>Contacto</h2>
             <p style={{ fontSize: "18px", fontWeight: 250 }}>
-              Direccion : street city, state 0000
-              <br />
               Email : 11.11live.drink@gmail.com
               <br />
             </p>
@@ -128,8 +126,7 @@ const Invoice = (props) => {
               }}
               class="legal"
             >
-              <strong style={{fontSize: "12px"}}>{order.clientName}</strong>
-              <br />
+              <strong style={{ fontSize: "12px" }}>{order.waiterName}</strong>
               <br />
               <strong>¡Gracias por su comprar!</strong>
               <br />
