@@ -75,7 +75,7 @@ const AppLayout = () => {
             });
           } else {
             // Crear usuario y asignar rol
-            let date = new Date().toLocaleString([], { hour12: true });
+            let date = new Date().toLocaleString(["la"], { hour12: true });
             const newUser = createUser(
               currentUser.email,
               currentUser.displayName,
