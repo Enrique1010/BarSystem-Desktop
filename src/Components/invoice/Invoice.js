@@ -19,7 +19,7 @@ export const InvoiceElement = (order) => {
         </td>
         <td class="tableitem">
           <p style={{ fontSize: "18px", lineHeight: "1.2em" }} class="itemtext">
-            ${prd.price}.00
+            RD${`${prd.price}`.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")}
           </p>
         </td>
       </tr>
@@ -110,7 +110,7 @@ const Invoice = (props) => {
                 </td>
                 <td class="payment">
                   <h2 style={{ fontSize: "20px", fontWeight: 400 }}>
-                    ${total}.00
+                    RD${`${total}`.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")}
                   </h2>
                 </td>
               </tr>

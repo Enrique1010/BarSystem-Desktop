@@ -313,14 +313,13 @@ export const buildOrderWithoutDataObject = (data) => {
 
 export const buildOrderObjectWithProductFormatted = (item) => {
   let data = item.data();
-  let newDate = new Date(data.date).toLocaleDateString();
   return {
     id: item.id,
     orderNumber: data.orderNumber,
     openOrder: data.openOrder,
     clientName: data.clientName,
     currentState: data.currentState,
-    date: newDate,
+    date: data.date,
     products: data.products.length,
     table: data.table,
     cups: data.cups,
