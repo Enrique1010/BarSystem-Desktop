@@ -8,9 +8,9 @@ import { PTable } from "../Products/ProductComponent";
 
 const columns = [
   {
-    title: "Cliente",
-    dataIndex: "clientName",
-    key: "clientName",
+    title: "No. Orden",
+    dataIndex: "orderNumber",
+    key: "orderNumber",
   },
   {
     title: "Fecha",
@@ -39,14 +39,14 @@ const OrderList = () => {
 
   const FilterByNameInput = (
     <Input
-      placeholder="Filtrar por Nombre de Cliente"
+      placeholder="Filtrar por Número de Orden"
       value={nameFilter}
       onChange={(e) => {
         const filter = e.target.value;
         setNameFilter(filter);
         if (filter.trim() !== "") {
           const filteredData = orders.filter((ord) =>
-            ord.clientName.toLowerCase().includes(filter.toLocaleLowerCase())
+            ord.orderNumber.toLowerCase().includes(filter.toLocaleLowerCase())
           );
           setFilteredOrders(filteredData);
         } else {
