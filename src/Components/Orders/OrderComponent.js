@@ -99,7 +99,7 @@ export const StateAlert = styled(Alert)`
 `;
 
 export const displayDate = (d) => {
-  return new Date(date).toLocaleDateString('en-GB');
+  return new Date(d).toLocaleDateString('en-GB');
 }
 
 

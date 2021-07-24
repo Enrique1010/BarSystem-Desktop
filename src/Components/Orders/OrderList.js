@@ -3,7 +3,7 @@ import { Input, PageHeader } from "antd";
 import { CustomContent, CustomLayout } from "../navigation/AppLayout";
 import { ORDER_LIST, APP_NAME } from "../../DefaultProps";
 import OrdersDataService from "../services/Orders.service";
-import { buildOrderObjectWithProductFormatted } from "./OrderComponent";
+import { buildOrderObjectWithProductFormatted, displayDate } from "./OrderComponent";
 import { PTable } from "../Products/ProductComponent";
 
 const columns = [
@@ -16,6 +16,7 @@ const columns = [
     title: "Fecha",
     dataIndex: "date",
     key: "date",
+    return: (v) => displayDate(v)
   },
   {
     title: "Productos",

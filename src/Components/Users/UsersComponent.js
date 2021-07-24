@@ -16,6 +16,7 @@ import { APP_NAME, INVENTORY_NAME } from "../../DefaultProps";
 import { CustomContent, CustomLayout } from "../navigation/AppLayout";
 import UsersService from "../services/Users.service";
 import { parseRole } from "./users.config";
+import { displayDate } from "../Orders/OrderComponent";
 
 export const PTable = styled(Table)`
   padding: 20px;
@@ -38,6 +39,7 @@ const columns = [
     title: "Fecha de Registro",
     dataIndex: "date",
     key: "date",
+    rebder: (d) => displayDate(d)
   },
   {
     title: "Rol",
