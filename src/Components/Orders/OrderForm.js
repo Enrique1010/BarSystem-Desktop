@@ -11,7 +11,7 @@ import {
   Table,
 } from "antd";
 import { CustomContent, CustomLayout } from "../navigation/AppLayout";
-import { ADD_PRODUCT_NAME, APP_NAME } from "../../DefaultProps";
+import { ADD_PRODUCT_NAME, APP_NAME, getLocalDate } from "../../DefaultProps";
 import { useHistory } from "react-router";
 import { ROUTE_ORDERS } from "../navigation/Routes";
 import OrdersService from "../services/Orders.service";
@@ -79,7 +79,9 @@ const OrderForm = () => {
 
   const onFinishForm = (values) => {
     let dateInstance = new Date();
-    let date = new Date().toLocaleString(['la'], { hour12: true });
+    // let date = new Date().toLocaleString(['la'], { hour12: true });
+    // let date = new Date().toISOString().replaceAll("T", " ").replaceAll("Z", "");
+    let date = getLocalDate();
     let waiter = users.find((x) => x.uid === values.uid);
     let randomNumber = Math.round(Math.random() * (999 - 10) + 10);
     values["date"] = date;

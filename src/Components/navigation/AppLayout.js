@@ -29,6 +29,7 @@ import UsersService from "../services/Users.service";
 import UsersComponent from "../Users/UsersComponent";
 import firebase from "firebase";
 import OrderForm from "../Orders/OrderForm";
+import { getLocalDate } from "../../DefaultProps";
 
 // Configure FirebaseUI.
 const uiConfig = {
@@ -75,7 +76,7 @@ const AppLayout = () => {
             });
           } else {
             // Crear usuario y asignar rol
-            let date = new Date().toLocaleString(["la"], { hour12: true });
+            let date = getLocalDate();
             const newUser = createUser(
               currentUser.email,
               currentUser.displayName,
