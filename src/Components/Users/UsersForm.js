@@ -45,7 +45,7 @@ const UsersForm = () => {
           date
         );
         UsersService.create(newUser).then(() => {});
-        openNotification(newUser.name);
+        openNotification(userName);
         // user.updateProfile({
         //   displayName: userName,
         // }).then(() => {console.log("why?? e.e");});
