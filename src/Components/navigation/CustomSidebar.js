@@ -4,6 +4,7 @@ import {
   UserSwitchOutlined,
   TagsOutlined,
   TagsTwoTone,
+  CloseOutlined,
 } from "@ant-design/icons";
 import { Menu } from "antd";
 import styled from "styled-components";
@@ -14,6 +15,7 @@ import {
   ROUTE_ORDERS_DONE,
   ROUTE_ORDERS_OPEN,
   ROUTE_USERS,
+  ROUTE_LOG_OUT,
 } from "./Routes";
 import {
   INVENTORY_NAME,
@@ -21,8 +23,9 @@ import {
   ORDER_NAME_DONE,
   USERS_NAME,
 } from "../../DefaultProps";
+import { findRequiredAction, ORDERS_ALL, ORDERS_READ, PRODUCTS_READ, PRODUCTS_WRITE, USERS_ALL, validateRoleActions } from "../Users/users.config";
 
-const CustomSidebar = () => {
+const CustomSidebar = ({isSignedIn, userForbiddenActions}) => {
   const history = useHistory();
   const location = useLocation();
 
@@ -44,14 +47,20 @@ const CustomSidebar = () => {
       mode="inline"
       theme="dark"
     >
-      <Menu.Item
-        key="1"
-        icon={<TagsOutlined />}
-        onClick={() => handleClick(ROUTE_ORDERS)}
-      >
-        {ORDER_NAME}
-      </Menu.Item>
-      {/* <Menu.Item
+      {isSignedIn ? (
+        <>
+          <Menu.Item
+            key="1"
+            icon={<TagsOutlined />}
+            onClick={() => handleClick(ROUTE_ORDERS)}
+            disabled={validateRoleActions(userForbiddenActions, [
+              ORDERS_ALL,
+              PRODUCTS_WRITE,
+            ])}
+          >
+            {ORDER_NAME}
+          </Menu.Item>
+          {/* <Menu.Item
             key="2"
             icon={<TagsFilled />}
             onClick={() => handleClick(ROUTE_ORDERS_OPEN)}
@@ -59,34 +68,47 @@ const CustomSidebar = () => {
           >
             {OPEN_ORDER_NAME}
           </Menu.Item> */}
-      <Menu.Item
-        key="3"
-        icon={<TagsTwoTone />}
-        onClick={() => handleClick(ROUTE_ORDERS_DONE)}
-      >
-        {ORDER_NAME_DONE}
-      </Menu.Item>
-      <Menu.Item
-        key="4"
-        icon={<PieChartOutlined />}
-        onClick={() => handleClick(ROUTE_INVENTORY)}
-      >
-        {INVENTORY_NAME}
-      </Menu.Item>
-      <Menu.Item
-        key="5"
-        icon={<UserSwitchOutlined />}
-        onClick={() => handleClick(ROUTE_USERS)}
-      >
-        {USERS_NAME}
-      </Menu.Item>
-      {/* <Menu.Item
-        key="6"
-        icon={<CloseOutlined />}
-        onClick={() => handleClick(ROUTE_LOG_OUT)}
-      >
-        Cerrar Sesión
-      </Menu.Item> */}
+          <Menu.Item
+            key="3"
+            icon={<TagsTwoTone />}
+            onClick={() => handleClick(ROUTE_ORDERS_DONE)}
+            disabled={
+              findRequiredAction(userForbiddenActions, ORDERS_ALL) ||
+              findRequiredAction(userForbiddenActions, ORDERS_READ)
+            }
+          >
+            {ORDER_NAME_DONE}
+          </Menu.Item>
+          <Menu.Item
+            key="4"
+            icon={<PieChartOutlined />}
+            onClick={() => handleClick(ROUTE_INVENTORY)}
+            disabled={
+              findRequiredAction(userForbiddenActions, PRODUCTS_READ) ||
+              findRequiredAction(userForbiddenActions, PRODUCTS_WRITE)
+            }
+          >
+            {INVENTORY_NAME}
+          </Menu.Item>
+          <Menu.Item
+            key="5"
+            icon={<UserSwitchOutlined />}
+            onClick={() => handleClick(ROUTE_USERS)}
+            disabled={findRequiredAction(userForbiddenActions, USERS_ALL)}
+          >
+            {USERS_NAME}
+          </Menu.Item>
+          <Menu.Item
+            key="6"
+            icon={<CloseOutlined />}
+            onClick={() => handleClick(ROUTE_LOG_OUT)}
+          >
+            Cerrar Sesión
+          </Menu.Item>
+        </>
+      ) : (
+        <></>
+      )}
     </StyledMenu>
   );
 };

@@ -65,7 +65,6 @@ export const buildProductObject = (item) => {
     category: data.category,
     price: data.price,
     supply: data.supply,
-    lastAddedSupply: data.lastAddedSupply,
     olderSupply: data.olderSupply,
     quantitySold: data.quantitySold,
     registrationDate: data.registrationDate,

@@ -90,26 +90,32 @@ const UsersComponent = () => {
         key: "x",
         render: (record) => (
           <>
-            <Button
-              onClick={() => onEdit(record)}
-              style={{ marginRight: "12px" }}
-            >
-              <EditOutlined />
-            </Button>
+            {record.role !== "admin" ? (
+              <>
+                <Button
+                  onClick={() => onEdit(record)}
+                  style={{ marginRight: "12px" }}
+                >
+                  <EditOutlined />
+                </Button>
 
-            <Popconfirm
-              placement="top"
-              title={
-                "¿Desea Eliminar esta Usuario? Se perderán todos los accesos de inmediato."
-              }
-              onConfirm={() => onDelete(record.uid)}
-              okText="Si"
-              cancelText="No"
-            >
-              <Button>
-                <DeleteOutlined />
-              </Button>
-            </Popconfirm>
+                <Popconfirm
+                  placement="top"
+                  title={
+                    "¿Desea Eliminar esta Usuario? Se perderán todos los accesos de inmediato."
+                  }
+                  onConfirm={() => onDelete(record.uid)}
+                  okText="Si"
+                  cancelText="No"
+                >
+                  <Button>
+                    <DeleteOutlined />
+                  </Button>
+                </Popconfirm>
+              </>
+            ) : (
+              <></>
+            )}
           </>
         ),
       },

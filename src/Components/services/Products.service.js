@@ -27,7 +27,6 @@ export const buildProduct = values => {
     category: values.category,
     price: values.price,
     supply: values.supply,
-    lastAddedSupply: values.lastAddedSupply,
     olderSupply: values.olderSupply,
     quantitySold: values.quantitySold,
     registrationDate: values.registrationDate,

@@ -21,7 +21,6 @@ const ProductForm = () => {
     let date = getLocalDate();
     values["registrationDate"] = date;
     values["lastRegistrationDate"] = date;
-    values["lastAddedSupply"] = 0;
     values["newSupply"] = 0;
     values["olderSupply"] = 0;
     values["quantitySold"] = 0;

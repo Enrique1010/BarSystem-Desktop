@@ -8,7 +8,6 @@ import {
   Divider,
   Select,
   Switch,
-  Table,
 } from "antd";
 import { CustomContent, CustomLayout } from "../navigation/AppLayout";
 import { ADD_PRODUCT_NAME, APP_NAME, getLocalDate } from "../../DefaultProps";
@@ -20,24 +19,6 @@ import { buildProductObject } from "../Products/ProductComponent";
 import { Option } from "antd/lib/mentions";
 import { buildOrderWithoutDataObject } from "./OrderComponent";
 import UsersService from "../services/Users.service";
-
-const columns = [
-  {
-    title: "Nombre",
-    dataIndex: "name",
-    key: "name",
-  },
-  {
-    title: "Cantidad",
-    dataIndex: "amount",
-    key: "amount",
-  },
-  {
-    title: "Precio",
-    dataIndex: "price",
-    key: "price",
-  },
-];
 
 const OrderForm = () => {
   const history = useHistory();

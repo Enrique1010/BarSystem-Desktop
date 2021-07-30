@@ -1,29 +1,17 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   notification,
   Button,
   Form,
   Input,
-  InputNumber,
   PageHeader,
-  Tooltip,
 } from "antd";
 import { CustomContent, CustomLayout } from "../navigation/AppLayout";
 import { ADD_PRODUCT_NAME, APP_NAME, getLocalDate } from "../../DefaultProps";
-import { useHistory } from "react-router";
+import { useHistory } from "react-router-dom";
 import { ROUTE_INVENTORY } from "../navigation/Routes";
 import firebase from "firebase";
 import UsersService from "../services/Users.service";
-
-// Configure FirebaseUI.
-const uiConfig = {
-  // Popup signin flow rather than redirect flow.
-  signInFlow: "redirect",
-  // Redirect to /signedIn after sign in is successful. Alternatively you can provide a callbacks.signInSuccess function.
-  signInSuccessUrl: "/",
-  // We will display Google and Facebook as auth providers.
-  signInOptions: [firebase.auth.GoogleAuthProvider.PROVIDER_ID],
-};
 
 const UsersForm = () => {
   const history = useHistory();
