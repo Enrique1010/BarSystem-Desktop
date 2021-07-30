@@ -60,16 +60,14 @@ const columns = [
 export const buildProductObject = (item) => {
   let data = item.data();
   return {
-    id: item.id,
-    name: data.name,
     productCode: data.productCode,
+    name: data.name,
     category: data.category,
     price: data.price,
     supply: data.supply,
     lastAddedSupply: data.lastAddedSupply,
     olderSupply: data.olderSupply,
     quantitySold: data.quantitySold,
-    dailySales: data.dailySales,
     registrationDate: data.registrationDate,
     lastRegistrationDate: data.lastRegistrationDate,
   };
@@ -105,7 +103,7 @@ const ProductComponent = () => {
             <Popconfirm
               placement="top"
               title={"¿Desea cancelar esta Orden?"}
-              onConfirm={() => onDelete(record.id)}
+              onConfirm={() => onDelete(record.productCode)}
               okText="Si"
               cancelText="No"
             >
@@ -172,7 +170,7 @@ const ProductComponent = () => {
       }
       if (!!newName) newElement.name = newName;
       if (!!price) newElement.price = price;
-      ProductsDataService.update(newElement.id, newElement);
+      ProductsDataService.update(newElement.productCode, newElement);
       showUpdateInfo(newElement.name);
       setVisible(false);
       setPrice(undefined);

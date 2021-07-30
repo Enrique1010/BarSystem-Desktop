@@ -126,7 +126,7 @@ const Invoice = (props) => {
               }}
               class="legal"
             >
-              <strong style={{ fontSize: "12px" }}>{order.waiterName}</strong>
+              <strong style={{ fontSize: "12px" }}>Atendido por: {order.waiterName}</strong>
               <br />
               <strong>¡Gracias por su comprar!</strong>
               <br />

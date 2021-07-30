@@ -17,6 +17,8 @@ import { CustomContent, CustomLayout } from "../navigation/AppLayout";
 import UsersService from "../services/Users.service";
 import { parseRole } from "./users.config";
 import { displayDate } from "../Orders/OrderComponent";
+import { ROUTE_REGISTER_USER } from "../navigation/Routes";
+import { useHistory } from "react-router-dom";
 
 export const PTable = styled(Table)`
   padding: 20px;
@@ -39,7 +41,7 @@ const columns = [
     title: "Fecha de Registro",
     dataIndex: "date",
     key: "date",
-    rebder: (d) => displayDate(d)
+    rebder: (d) => displayDate(d),
   },
   {
     title: "Rol",
@@ -77,6 +79,7 @@ const UsersComponent = () => {
   const [newRole, setNewRole] = useState("disabled");
   const [newUser, setNewUser] = useState(undefined);
   const [modal, contextHolder] = Modal.useModal();
+  const history = useHistory();
 
   const tableColumns = () => {
     let cols = [
@@ -212,12 +215,21 @@ const UsersComponent = () => {
     message.info(`El Usuario ${name} ahora tiene el rol de ${role}`);
   };
 
+  const registerUser = () => {
+    history.push(ROUTE_REGISTER_USER);
+  };
+
   return (
     <CustomLayout>
       <PageHeader
         ghost={false}
         title={APP_NAME}
         subTitle={INVENTORY_NAME}
+        extra={[
+          <Button key="1" type="primary" onClick={registerUser}>
+            Registrar Usuario
+          </Button>,
+        ]}
       ></PageHeader>
       <CustomContent>
         {FilterByNameInput}

@@ -1,20 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Image } from "antd";
 import Layout, { Content, Footer } from "antd/lib/layout/layout";
 import Sider from "antd/lib/layout/Sider";
 import OrderComponent from "../Orders/OrderComponent";
 import CustomSidebar from "./CustomSidebar";
 import mainLogo from "../../logo.jpeg";
-import { Route, Switch, useHistory } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 import {
   ROUTE_ADD_ORDER,
   ROUTE_ADD_PRODUCT,
-  ROUTE_AUTH,
   ROUTE_INVENTORY,
   ROUTE_LOG_OUT,
   ROUTE_ORDERS,
   ROUTE_ORDERS_DONE,
-  ROUTE_ORDERS_OPEN,
+  ROUTE_REGISTER_USER,
   ROUTE_USERS,
 } from "./Routes";
 import ProductComponent from "../Products/ProductComponent";
@@ -22,157 +21,59 @@ import styled from "styled-components";
 import ProductForm from "../Products/ProductForm";
 import Store from "../../commonStore";
 import OrderList from "../Orders/OrderList";
-import OpenOrderComponent from "../Orders/OpenOrderComponent";
-// import firebase from "firebase";
-import { StyledFirebaseAuth } from "react-firebaseui";
-import UsersService from "../services/Users.service";
 import UsersComponent from "../Users/UsersComponent";
-import firebase from "firebase";
 import OrderForm from "../Orders/OrderForm";
-import { getLocalDate } from "../../DefaultProps";
-
-// Configure FirebaseUI.
-const uiConfig = {
-  // Popup signin flow rather than redirect flow.
-  signInFlow: "redirect",
-  // Redirect to /signedIn after sign in is successful. Alternatively you can provide a callbacks.signInSuccess function.
-  signInSuccessUrl: "/",
-  // We will display Google and Facebook as auth providers.
-  signInOptions: [firebase.auth.GoogleAuthProvider.PROVIDER_ID],
-};
+import UsersForm from "../Users/UsersForm";
 
 const AppLayout = () => {
-  const history = useHistory();
-  const [isSignedIn, setIsSignedIn] = useState(false); // Local signed-in state.
-  const [currentUser, setCurrentUser] = useState(undefined);
-  const [userRolesForbiddenActions, setUserRolesForbiddenActions] = useState(
-    []
-  );
-
-  // Listen to the Firebase Auth state and set the local state.
-  useEffect(() => {
-    const unregisterAuthObserver = firebase
-      .auth()
-      .onAuthStateChanged((user) => {
-        setIsSignedIn(!!user);
-        setCurrentUser(!!user ? user : undefined);
-      });
-    return () => unregisterAuthObserver(); // Make sure we un-register Firebase observers when the component unmounts.
-  }, []);
-
-  useEffect(() => {
-    const getOrCreateUser = () => {
-      if (!!currentUser) {
-        UsersService.getByUID(currentUser.uid).onSnapshot((usr) => {
-          if (!!usr && usr.exists) {
-            // Recibir el rol
-            UsersService.getRole(usr.data().role).onSnapshot((roles) => {
-              if (!!roles) {
-                const foundRole = roles.docs
-                  .find((r) => r.data().role === usr.data().role)
-                  .data();
-                setUserRolesForbiddenActions(foundRole.forbidden);
-              }
-            });
-          } else {
-            // Crear usuario y asignar rol
-            let date = getLocalDate();
-            const newUser = createUser(
-              currentUser.email,
-              currentUser.displayName,
-              "pending",
-              currentUser.uid,
-              date
-            );
-            if (!!currentUser.uid) {
-              UsersService.create(newUser);
-              setUserRolesForbiddenActions([]);
-            }
-          }
-        });
-      }
-    };
-
-    getOrCreateUser();
-  }, [currentUser]);
-
-  const redirectAuth = () => {
-    if (!isSignedIn) {
-      history.push(ROUTE_AUTH);
-    }
-  };
-
-  const logOut = () => {
-    firebase.auth().signOut();
-    history.push(ROUTE_AUTH);
-  };
 
   return (
     <Store style={{ maxHeight: "100vh" }}>
       <Layout>
         <Sider>
           <Image src={mainLogo} style={{ height: "auto" }} />
-          <CustomSidebar
-            isSignedIn={isSignedIn}
-            userForbiddenActions={userRolesForbiddenActions}
-          />
+          <CustomSidebar />
         </Sider>
-        {!isSignedIn ? (
-          <LoginForm>
-            <h1>Iniciar Sesión</h1>
-            <br />
-            <StyledFirebaseAuth
-              uiConfig={uiConfig}
-              firebaseAuth={firebase.auth()}
-            />
-          </LoginForm>
-        ) : (
-          <Switch>
-            {/* ORDERS AND EACH STATUS FILTER */}
-            <Route exact path="/">
-              {redirectAuth}
-              <spam style={{ margin: "30%", alignText: "center" }}>
-                <h1>
-                  Bienvenido a <b>11:11 Administrativo</b>
-                </h1>
-                <br />
-                Elija una opción para ir a otra pantalla en el menú lateral.
-              </spam>
-            </Route>
-            <Route exact path={ROUTE_ORDERS}>
-              {redirectAuth}
-              <OrderComponent />
-            </Route>
-            {/* <Route exact path={ROUTE_ORDERS_OPEN}>
-              {redirectAuth}
+        <Switch>
+          {/* ORDERS AND EACH STATUS FILTER */}
+          <Route exact path="/">
+            <spam style={{ margin: "30%", alignText: "center" }}>
+              <h1>
+                Bienvenido a <b>11:11 Administrativo</b>
+              </h1>
+              <br />
+              Elija una opción para ir a otra pantalla en el menú lateral.
+            </spam>
+          </Route>
+          <Route exact path={ROUTE_ORDERS}>
+            <OrderComponent />
+          </Route>
+          {/* <Route exact path={ROUTE_ORDERS_OPEN}>
               <OpenOrderComponent />
             </Route> */}
-            <Route exact path={ROUTE_ORDERS_DONE}>
-              {redirectAuth}
-              <OrderList />
-            </Route>
-            <Route exact path={ROUTE_ADD_ORDER}>
-              {redirectAuth}
-              <OrderForm />
-            </Route>
-            {/* OTHERS */}
-            <Route exact path={ROUTE_INVENTORY}>
-              {redirectAuth}
-              <ProductComponent />
-            </Route>
-            <Route exact path={ROUTE_ADD_PRODUCT}>
-              {redirectAuth}
-              <ProductForm />
-            </Route>
-            <Route exact path={ROUTE_USERS}>
-              {redirectAuth}
-              <UsersComponent />
-            </Route>
-            <Route exact path={ROUTE_LOG_OUT}>
-              {logOut}
-            </Route>
-          </Switch>
-        )}
+          <Route exact path={ROUTE_ORDERS_DONE}>
+            <OrderList />
+          </Route>
+          <Route exact path={ROUTE_ADD_ORDER}>
+            <OrderForm />
+          </Route>
+          {/* OTHERS */}
+          <Route exact path={ROUTE_INVENTORY}>
+            <ProductComponent />
+          </Route>
+          <Route exact path={ROUTE_ADD_PRODUCT}>
+            <ProductForm />
+          </Route>
+          <Route exact path={ROUTE_USERS}>
+            <UsersComponent />
+          </Route>
+          <Route exact path={ROUTE_REGISTER_USER}>
+            <UsersForm />
+          </Route>
+          <Route exact path={ROUTE_LOG_OUT}>
+            {/* {logOut} */}
+          </Route>
+        </Switch>
       </Layout>
     </Store>
   );
@@ -204,15 +105,5 @@ export const LoginForm = styled.div`
   margin: 10px;
   padding: 10px;
 `;
-
-const createUser = (email, name, role, uid, date) => {
-  return {
-    email: email,
-    userName: name,
-    role: role,
-    uid: uid,
-    date: date,
-  };
-};
 
 export default AppLayout;
