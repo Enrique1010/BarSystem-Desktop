@@ -14,7 +14,6 @@ import {
   ROUTE_LOG_OUT,
   ROUTE_ORDERS,
   ROUTE_ORDERS_DONE,
-  ROUTE_REGISTER_USER,
   ROUTE_USERS,
 } from "./Routes";
 import ProductComponent from "../Products/ProductComponent";
@@ -24,7 +23,6 @@ import Store from "../../commonStore";
 import OrderList from "../Orders/OrderList";
 import UsersComponent from "../Users/UsersComponent";
 import OrderForm from "../Orders/OrderForm";
-import UsersForm from "../Users/UsersForm";
 import { useEffect, useState } from "react/cjs/react.development";
 import firebase from "firebase";
 import UsersService from "../services/Users.service";
@@ -35,7 +33,8 @@ const AppLayout = () => {
   const [form] = Form.useForm();
   const [currentUser, setCurrentUser] = useState(undefined);
   const [isSignedIn, setIsSignedIn] = useState(false);
-  const [userRolesForbiddenActions, setUserRolesForbiddenActions] = useState(undefined);
+  const [userRolesForbiddenActions, setUserRolesForbiddenActions] =
+    useState(undefined);
 
   const redirectAuth = () => {
     if (!isSignedIn) {
@@ -61,7 +60,7 @@ const AppLayout = () => {
                 const foundRole = roles.docs
                   .find((r) => r.data().role === usr.data().role)
                   .data();
-                  console.log('Aparecio ', foundRole);
+                console.log("Aparecio ", foundRole);
                 setUserRolesForbiddenActions(foundRole.forbidden);
                 setIsSignedIn(true);
               }
@@ -83,31 +82,32 @@ const AppLayout = () => {
   };
 
   const onFinishForm = (values) => {
-    if (
-      !!values.password &&
-      values.password !== ""
-    ) {
+    if (!!values.password && values.password !== "") {
       firebase
         .auth()
         .signInWithEmailAndPassword(LOGIN_EMAIL, values.password)
         .then((userCredential) => {
           console.log(userCredential);
           setCurrentUser(userCredential.user);
-        }).catch((error) => {
+        })
+        .catch((error) => {
           openRegisterErrorNotification(error.message);
         });
       form.resetFields();
     } else {
-      openRegisterErrorNotification('');
+      openRegisterErrorNotification("");
     }
   };
 
   return (
-    <Store style={{ maxHeight: "100vh" }}>
+    <Store>
       <Layout>
         <Sider>
           <Image src={mainLogo} style={{ height: "auto" }} />
-          <CustomSidebar isSignedIn={isSignedIn} userRolesForbiddenActions={userRolesForbiddenActions} />
+          <CustomSidebar
+            isSignedIn={isSignedIn}
+            userRolesForbiddenActions={userRolesForbiddenActions}
+          />
         </Sider>
 
         {!isSignedIn ? (
@@ -132,9 +132,6 @@ const AppLayout = () => {
               {redirectAuth}
               <OrderComponent />
             </Route>
-            {/* <Route exact path={ROUTE_ORDERS_OPEN}>
-              <OpenOrderComponent />
-            </Route> */}
             <Route exact path={ROUTE_ORDERS_DONE}>
               {redirectAuth}
               <OrderList />
@@ -156,10 +153,6 @@ const AppLayout = () => {
               {redirectAuth}
               <UsersComponent />
             </Route>
-            {/* <Route exact path={ROUTE_REGISTER_USER}>
-              {redirectAuth}
-              <UsersForm />
-            </Route> */}
             <Route exact path={ROUTE_LOG_OUT}>
               {logOut}
             </Route>
@@ -209,7 +202,6 @@ export const CustomLayout = styled(Layout)`
 export const CustomContent = styled(Content)`
   margin: 24px 16px 0;
   color: white;
-  max-height: 100%;
   overflow: auto;
 `;
 
