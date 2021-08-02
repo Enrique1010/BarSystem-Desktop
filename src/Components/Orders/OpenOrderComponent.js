@@ -11,6 +11,7 @@ import {
   buildOrderObject,
   orderTitle,
   totalPrice,
+  displayDate,
 } from "./OrderComponent";
 import Invoice, { InvoiceElement } from "../invoice/Invoice";
 import OrdersDataService from "../services/Orders.service";
@@ -141,12 +142,12 @@ const OpenOrderComponent = () => {
           {orders.map((order) => (
             <OrderCard
               key={order.id}
-              title={orderTitle(order.orderNumber, order.clientName)}
+              title={order.orderNumber}
             >
               <SplitterWrapper>
                 <OrderElementsWrapper style={{ marginRight: "20px" }}>
                   <p>Mesa: {order.table}</p>
-                  <p>Fecha: {order.date}</p>
+                  <p>Fecha: {displayDate(order.date)}</p>
                   <p>
                     <Text type="success">Hielo: {order.ice ? "Si" : "No"}</Text>{" "}
                     <br />

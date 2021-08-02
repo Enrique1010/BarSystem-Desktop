@@ -8,7 +8,7 @@ import {
   PageHeader,
 } from "antd";
 import { CustomContent, CustomLayout } from "../navigation/AppLayout";
-import { ADD_PRODUCT_NAME, APP_NAME } from "../../DefaultProps";
+import { ADD_PRODUCT_NAME, APP_NAME, getLocalDate } from "../../DefaultProps";
 import { useHistory } from "react-router";
 import { ROUTE_INVENTORY } from "../navigation/Routes";
 import ProductDataService from "../services/Products.service";
@@ -18,11 +18,8 @@ const ProductForm = () => {
   const [form] = Form.useForm();
 
   const onFinishForm = (values) => {
-    let date = new Date().toLocaleString(['la'], { hour12: true });
+    let date = getLocalDate();
     values["registrationDate"] = date;
-    values["lastRegistrationDate"] = date;
-    values["dailySales"] = 0;
-    values["lastAddedSupply"] = 0;
     values["newSupply"] = 0;
     values["olderSupply"] = 0;
     values["quantitySold"] = 0;
@@ -35,7 +32,7 @@ const ProductForm = () => {
     notification.success({
       message: `Producto Agregado`,
       description: `Producto: ${name} se agregó correctamente`,
-      placement:'bottomRight',
+      placement: "bottomRight",
     });
   };
 

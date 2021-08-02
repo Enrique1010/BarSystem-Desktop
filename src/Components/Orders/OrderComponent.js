@@ -98,6 +98,11 @@ export const StateAlert = styled(Alert)`
   margin-bottom: 12px;
 `;
 
+export const displayDate = (d) => {
+  return new Date(d).toLocaleDateString('en-GB');
+}
+
+
 const OrderComponent = () => {
   const [orders, setOrders] = useState([]);
   const [products, setProducts] = useState([]);
@@ -202,12 +207,12 @@ const OrderComponent = () => {
           {orders.map((order) => (
             <OrderCard
               key={order.id}
-              title={orderTitle(order.orderNumber, order.clientName)}
+              title={order.orderNumber}
             >
               <SplitterWrapper>
                 <OrderElementsWrapper style={{ marginRight: "20px" }}>
                   <p>Mesa: {order.table}</p>
-                  <p>Fecha: {order.date}</p>
+                  <p>Fecha: {displayDate(order.date)}</p>
                   <p>
                     <Text type="success">Hielo: {order.ice ? "Si" : "No"}</Text>{" "}
                     <br />

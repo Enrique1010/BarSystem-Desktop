@@ -12,7 +12,7 @@ class OrdersDataService {
     return db
     .where("currentState", "==", false)
     .where("openOrder", "==", false)
-    .orderBy("date", "desc");
+    .orderBy("date", "asc");
   }
   
   getAllStaticUsers() {

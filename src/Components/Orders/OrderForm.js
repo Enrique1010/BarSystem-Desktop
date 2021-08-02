@@ -8,10 +8,9 @@ import {
   Divider,
   Select,
   Switch,
-  Table,
 } from "antd";
 import { CustomContent, CustomLayout } from "../navigation/AppLayout";
-import { ADD_PRODUCT_NAME, APP_NAME } from "../../DefaultProps";
+import { ADD_PRODUCT_NAME, APP_NAME, getLocalDate } from "../../DefaultProps";
 import { useHistory } from "react-router";
 import { ROUTE_ORDERS } from "../navigation/Routes";
 import OrdersService from "../services/Orders.service";
@@ -20,24 +19,6 @@ import { buildProductObject } from "../Products/ProductComponent";
 import { Option } from "antd/lib/mentions";
 import { buildOrderWithoutDataObject } from "./OrderComponent";
 import UsersService from "../services/Users.service";
-
-const columns = [
-  {
-    title: "Nombre",
-    dataIndex: "name",
-    key: "name",
-  },
-  {
-    title: "Cantidad",
-    dataIndex: "amount",
-    key: "amount",
-  },
-  {
-    title: "Precio",
-    dataIndex: "price",
-    key: "price",
-  },
-];
 
 const OrderForm = () => {
   const history = useHistory();
@@ -79,7 +60,9 @@ const OrderForm = () => {
 
   const onFinishForm = (values) => {
     let dateInstance = new Date();
-    let date = new Date().toLocaleString(['la'], { hour12: true });
+    // let date = new Date().toLocaleString(['la'], { hour12: true });
+    // let date = new Date().toISOString().replaceAll("T", " ").replaceAll("Z", "");
+    let date = getLocalDate();
     let waiter = users.find((x) => x.uid === values.uid);
     let randomNumber = Math.round(Math.random() * (999 - 10) + 10);
     values["date"] = date;
@@ -96,8 +79,8 @@ const OrderForm = () => {
       randomNumber;
     values["id"] = values.orderNumber;
     values["waiterName"] = waiter.name;
-    values["ice"] = !!values.ice ? values.ice : false;
-    values["cups"] = !!values.cups ? values.cups : false;
+    values["ice"] = true;
+    values["cups"] = true;
     values["clientName"] = "Cliente" + values.orderNumber;
     console.log(values);
     let newOrder = buildOrderWithoutDataObject(values);
@@ -167,11 +150,11 @@ const OrderForm = () => {
     setSelectedProduct("");
     setAmount(0);
   };
-  
+
   // const getTable = (
   //   <Table columns={columns} dataSource={!!orderProducts? orderProducts : []}></Table>
   // );
-  
+
   return (
     <CustomLayout>
       <PageHeader
@@ -192,20 +175,6 @@ const OrderForm = () => {
           name="addOrderForm"
           onFinish={onFinishForm}
         >
-          {/* <Form.Item
-            name="clientName"
-            label="Cliente"
-            rules={[
-              {
-                required: true,
-                message: "Debe Introducir el nombre del cliente.",
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-           */}
-
           <Form.Item name="uid" label="Usuario">
             <Select
               showSearch
@@ -232,15 +201,6 @@ const OrderForm = () => {
           >
             <InputNumber min={0} style={{ minWidth: 150 }} />
           </Form.Item>
-          <div style={{display: 'flex'}}>
-            <Form.Item name="cups" label="Vasos">
-              <Switch />
-            </Form.Item>
-
-            <Form.Item name="ice" label="Hielo">
-              <Switch />
-            </Form.Item>
-          </div>
 
           <Divider />
 

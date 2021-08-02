@@ -8,4 +8,5 @@ export const ROUTE_INVENTORY = "/inventory";
 export const ROUTE_ADD_PRODUCT = "/inventory/add-product";
 export const ROUTE_LOG_OUT = "/log-out";
 export const ROUTE_USERS = "/users";
+export const ROUTE_REGISTER_USER = "/users/register";
 export const ROUTE_AUTH = "/auth";

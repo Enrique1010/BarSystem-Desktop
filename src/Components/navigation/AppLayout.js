@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Image } from "antd";
+import React from "react";
+import { Button, Image, Input, notification, Form } from "antd";
 import Layout, { Content, Footer } from "antd/lib/layout/layout";
 import Sider from "antd/lib/layout/Sider";
 import OrderComponent from "../Orders/OrderComponent";
@@ -14,7 +14,7 @@ import {
   ROUTE_LOG_OUT,
   ROUTE_ORDERS,
   ROUTE_ORDERS_DONE,
-  ROUTE_ORDERS_OPEN,
+  ROUTE_REGISTER_USER,
   ROUTE_USERS,
 } from "./Routes";
 import ProductComponent from "../Products/ProductComponent";
@@ -22,42 +22,33 @@ import styled from "styled-components";
 import ProductForm from "../Products/ProductForm";
 import Store from "../../commonStore";
 import OrderList from "../Orders/OrderList";
-import OpenOrderComponent from "../Orders/OpenOrderComponent";
-// import firebase from "firebase";
-import { StyledFirebaseAuth } from "react-firebaseui";
-import UsersService from "../services/Users.service";
 import UsersComponent from "../Users/UsersComponent";
-import firebase from "firebase";
 import OrderForm from "../Orders/OrderForm";
-
-// Configure FirebaseUI.
-const uiConfig = {
-  // Popup signin flow rather than redirect flow.
-  signInFlow: "redirect",
-  // Redirect to /signedIn after sign in is successful. Alternatively you can provide a callbacks.signInSuccess function.
-  signInSuccessUrl: "/",
-  // We will display Google and Facebook as auth providers.
-  signInOptions: [firebase.auth.GoogleAuthProvider.PROVIDER_ID],
-};
+import UsersForm from "../Users/UsersForm";
+import { useEffect, useState } from "react/cjs/react.development";
+import firebase from "firebase";
+import UsersService from "../services/Users.service";
+import { LOGIN_EMAIL } from "../../DefaultProps";
 
 const AppLayout = () => {
   const history = useHistory();
-  const [isSignedIn, setIsSignedIn] = useState(false); // Local signed-in state.
+  const [form] = Form.useForm();
   const [currentUser, setCurrentUser] = useState(undefined);
-  const [userRolesForbiddenActions, setUserRolesForbiddenActions] = useState(
-    []
-  );
+  const [isSignedIn, setIsSignedIn] = useState(false);
+  const [userRolesForbiddenActions, setUserRolesForbiddenActions] = useState(undefined);
 
-  // Listen to the Firebase Auth state and set the local state.
-  useEffect(() => {
-    const unregisterAuthObserver = firebase
-      .auth()
-      .onAuthStateChanged((user) => {
-        setIsSignedIn(!!user);
-        setCurrentUser(!!user ? user : undefined);
-      });
-    return () => unregisterAuthObserver(); // Make sure we un-register Firebase observers when the component unmounts.
-  }, []);
+  const redirectAuth = () => {
+    if (!isSignedIn) {
+      history.push(ROUTE_AUTH);
+    }
+  };
+
+  const logOut = () => {
+    firebase.auth().signOut();
+    setIsSignedIn(false);
+    setCurrentUser(undefined);
+    history.push(ROUTE_AUTH);
+  };
 
   useEffect(() => {
     const getOrCreateUser = () => {
@@ -70,23 +61,11 @@ const AppLayout = () => {
                 const foundRole = roles.docs
                   .find((r) => r.data().role === usr.data().role)
                   .data();
+                  console.log('Aparecio ', foundRole);
                 setUserRolesForbiddenActions(foundRole.forbidden);
+                setIsSignedIn(true);
               }
             });
-          } else {
-            // Crear usuario y asignar rol
-            let date = new Date().toLocaleString(["la"], { hour12: true });
-            const newUser = createUser(
-              currentUser.email,
-              currentUser.displayName,
-              "pending",
-              currentUser.uid,
-              date
-            );
-            if (!!currentUser.uid) {
-              UsersService.create(newUser);
-              setUserRolesForbiddenActions([]);
-            }
           }
         });
       }
@@ -95,15 +74,32 @@ const AppLayout = () => {
     getOrCreateUser();
   }, [currentUser]);
 
-  const redirectAuth = () => {
-    if (!isSignedIn) {
-      history.push(ROUTE_AUTH);
-    }
+  const openRegisterErrorNotification = (message) => {
+    notification.error({
+      message: `Acceso de Usuario`,
+      description: `No se pudo Iniciar sesión con el usuario \n ${message}`,
+      placement: "bottomRight",
+    });
   };
 
-  const logOut = () => {
-    firebase.auth().signOut();
-    history.push(ROUTE_AUTH);
+  const onFinishForm = (values) => {
+    if (
+      !!values.password &&
+      values.password !== ""
+    ) {
+      firebase
+        .auth()
+        .signInWithEmailAndPassword(LOGIN_EMAIL, values.password)
+        .then((userCredential) => {
+          console.log(userCredential);
+          setCurrentUser(userCredential.user);
+        }).catch((error) => {
+          openRegisterErrorNotification(error.message);
+        });
+      form.resetFields();
+    } else {
+      openRegisterErrorNotification('');
+    }
   };
 
   return (
@@ -111,19 +107,13 @@ const AppLayout = () => {
       <Layout>
         <Sider>
           <Image src={mainLogo} style={{ height: "auto" }} />
-          <CustomSidebar
-            isSignedIn={isSignedIn}
-            userForbiddenActions={userRolesForbiddenActions}
-          />
+          <CustomSidebar isSignedIn={isSignedIn} userRolesForbiddenActions={userRolesForbiddenActions} />
         </Sider>
+
         {!isSignedIn ? (
           <LoginForm>
             <h1>Iniciar Sesión</h1>
-            <br />
-            <StyledFirebaseAuth
-              uiConfig={uiConfig}
-              firebaseAuth={firebase.auth()}
-            />
+            <Login form={form} onFinishForm={onFinishForm} />
           </LoginForm>
         ) : (
           <Switch>
@@ -143,7 +133,6 @@ const AppLayout = () => {
               <OrderComponent />
             </Route>
             {/* <Route exact path={ROUTE_ORDERS_OPEN}>
-              {redirectAuth}
               <OpenOrderComponent />
             </Route> */}
             <Route exact path={ROUTE_ORDERS_DONE}>
@@ -167,6 +156,10 @@ const AppLayout = () => {
               {redirectAuth}
               <UsersComponent />
             </Route>
+            {/* <Route exact path={ROUTE_REGISTER_USER}>
+              {redirectAuth}
+              <UsersForm />
+            </Route> */}
             <Route exact path={ROUTE_LOG_OUT}>
               {logOut}
             </Route>
@@ -176,6 +169,38 @@ const AppLayout = () => {
     </Store>
   );
 };
+
+const Login = ({ form, onFinishForm }) => (
+  <Form
+    form={form}
+    layout="vertical"
+    style={{ maxWidth: "500px", textAlign: "start" }}
+    name="addProductForm"
+    onFinish={onFinishForm}
+  >
+    {/* Contraseña */}
+    <Form.Item
+      name="password"
+      label="Contraseña"
+      hasFeedback
+      rules={[
+        {
+          required: true,
+          message: "Inserte su contraseña!",
+        },
+      ]}
+    >
+      <Input.Password />
+    </Form.Item>
+    <Button
+      type="primary"
+      htmlType="submit"
+      style={{ minWidth: 100, marginRight: 10 }}
+    >
+      Acceder
+    </Button>
+  </Form>
+);
 
 export const CustomLayout = styled(Layout)`
   max-height: 100vh;
@@ -203,15 +228,5 @@ export const LoginForm = styled.div`
   margin: 10px;
   padding: 10px;
 `;
-
-const createUser = (email, name, role, uid, date) => {
-  return {
-    email: email,
-    userName: name,
-    role: role,
-    uid: uid,
-    date: date,
-  };
-};
 
 export default AppLayout;

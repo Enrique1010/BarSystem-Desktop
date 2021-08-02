@@ -2,10 +2,9 @@ import React from "react";
 import {
   PieChartOutlined,
   UserSwitchOutlined,
-  CloseOutlined,
   TagsOutlined,
-  TagsFilled,
   TagsTwoTone,
+  CloseOutlined,
 } from "@ant-design/icons";
 import { Menu } from "antd";
 import styled from "styled-components";
@@ -15,27 +14,18 @@ import {
   ROUTE_INVENTORY,
   ROUTE_ORDERS_DONE,
   ROUTE_ORDERS_OPEN,
-  ROUTE_LOG_OUT,
   ROUTE_USERS,
+  ROUTE_LOG_OUT,
 } from "./Routes";
 import {
   INVENTORY_NAME,
-  OPEN_ORDER_NAME,
   ORDER_NAME,
   ORDER_NAME_DONE,
   USERS_NAME,
 } from "../../DefaultProps";
-import {
-  findRequiredAction,
-  ORDERS_ALL,
-  ORDERS_READ,
-  PRODUCTS_READ,
-  PRODUCTS_WRITE,
-  USERS_ALL,
-  validateRoleActions,
-} from "../Users/users.config";
+import { findRequiredAction, ORDERS_ALL, ORDERS_READ, PRODUCTS_READ, PRODUCTS_WRITE, USERS_ALL, validateRoleActions } from "../Users/users.config";
 
-const CustomSidebar = ({ isSignedIn, userForbiddenActions }) => {
+const CustomSidebar = ({isSignedIn, userForbiddenActions}) => {
   const history = useHistory();
   const location = useLocation();
 
@@ -52,14 +42,21 @@ const CustomSidebar = ({ isSignedIn, userForbiddenActions }) => {
     else if (location.pathname === ROUTE_USERS) return 6;
   };
   return (
-    <StyledMenu defaultOpenKeys={[getCurrentPathKey]} mode="inline" theme="dark">
+    <StyledMenu
+      defaultOpenKeys={[getCurrentPathKey]}
+      mode="inline"
+      theme="dark"
+    >
       {isSignedIn ? (
         <>
           <Menu.Item
             key="1"
             icon={<TagsOutlined />}
             onClick={() => handleClick(ROUTE_ORDERS)}
-            disabled={validateRoleActions(userForbiddenActions, [ORDERS_ALL, PRODUCTS_WRITE])}
+            disabled={validateRoleActions(userForbiddenActions, [
+              ORDERS_ALL,
+              PRODUCTS_WRITE,
+            ])}
           >
             {ORDER_NAME}
           </Menu.Item>
@@ -107,7 +104,7 @@ const CustomSidebar = ({ isSignedIn, userForbiddenActions }) => {
             onClick={() => handleClick(ROUTE_LOG_OUT)}
           >
             Cerrar Sesión
-          </Menu.Item>{" "}
+          </Menu.Item>
         </>
       ) : (
         <></>

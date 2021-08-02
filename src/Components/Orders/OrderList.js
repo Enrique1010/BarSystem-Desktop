@@ -3,19 +3,25 @@ import { Input, PageHeader } from "antd";
 import { CustomContent, CustomLayout } from "../navigation/AppLayout";
 import { ORDER_LIST, APP_NAME } from "../../DefaultProps";
 import OrdersDataService from "../services/Orders.service";
-import { buildOrderObjectWithProductFormatted } from "./OrderComponent";
+import {
+  buildOrderObject,
+  displayDate,
+} from "./OrderComponent";
 import { PTable } from "../Products/ProductComponent";
+import Text from "antd/lib/typography/Text";
+
 
 const columns = [
   {
-    title: "Cliente",
-    dataIndex: "clientName",
-    key: "clientName",
+    title: "No. Orden",
+    dataIndex: "orderNumber",
+    key: "orderNumber",
   },
   {
     title: "Fecha",
     dataIndex: "date",
     key: "date",
+    return: (v) => displayDate(v),
   },
   {
     title: "Productos",
@@ -39,14 +45,14 @@ const OrderList = () => {
 
   const FilterByNameInput = (
     <Input
-      placeholder="Filtrar por Nombre de Cliente"
+      placeholder="Filtrar por Número de Orden"
       value={nameFilter}
       onChange={(e) => {
         const filter = e.target.value;
         setNameFilter(filter);
         if (filter.trim() !== "") {
           const filteredData = orders.filter((ord) =>
-            ord.clientName.toLowerCase().includes(filter.toLocaleLowerCase())
+            ord.orderNumber.toLowerCase().includes(filter.toLocaleLowerCase())
           );
           setFilteredOrders(filteredData);
         } else {
@@ -60,7 +66,19 @@ const OrderList = () => {
     let current = [];
 
     items.forEach((item) => {
-      let val = buildOrderObjectWithProductFormatted(item);
+      let val = buildOrderObject(item);
+      val.products = (
+        <p>
+          {val.products.map((prod, index) => (
+            <>
+              <Text>
+                {index + 1}- {prod.name} ${prod.price}x{prod.amount}
+              </Text>
+              <br />
+            </>
+          ))}
+        </p>
+      );
       current.push(val);
     });
     setOrders(current);
