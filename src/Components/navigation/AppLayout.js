@@ -28,6 +28,7 @@ import UsersForm from "../Users/UsersForm";
 import { useEffect, useState } from "react/cjs/react.development";
 import firebase from "firebase";
 import UsersService from "../services/Users.service";
+import { LOGIN_EMAIL } from "../../DefaultProps";
 
 const AppLayout = () => {
   const history = useHistory();
@@ -84,13 +85,11 @@ const AppLayout = () => {
   const onFinishForm = (values) => {
     if (
       !!values.password &&
-      values.password !== "" &&
-      !!values.email &&
-      values.email !== ""
+      values.password !== ""
     ) {
       firebase
         .auth()
-        .signInWithEmailAndPassword(values.email, values.password)
+        .signInWithEmailAndPassword(LOGIN_EMAIL, values.password)
         .then((userCredential) => {
           console.log(userCredential);
           setCurrentUser(userCredential.user);
@@ -157,10 +156,10 @@ const AppLayout = () => {
               {redirectAuth}
               <UsersComponent />
             </Route>
-            <Route exact path={ROUTE_REGISTER_USER}>
+            {/* <Route exact path={ROUTE_REGISTER_USER}>
               {redirectAuth}
               <UsersForm />
-            </Route>
+            </Route> */}
             <Route exact path={ROUTE_LOG_OUT}>
               {logOut}
             </Route>
@@ -179,23 +178,6 @@ const Login = ({ form, onFinishForm }) => (
     name="addProductForm"
     onFinish={onFinishForm}
   >
-    {/* Email */}
-    <Form.Item
-      name="email"
-      label="E-mail"
-      rules={[
-        {
-          type: "email",
-          message: "The input is not valid E-mail!",
-        },
-        {
-          required: true,
-          message: "Inserte su Correo electrónico!",
-        },
-      ]}
-    >
-      <Input />
-    </Form.Item>
     {/* Contraseña */}
     <Form.Item
       name="password"

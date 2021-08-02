@@ -30,7 +30,6 @@ export const buildProduct = values => {
     olderSupply: values.olderSupply,
     quantitySold: values.quantitySold,
     registrationDate: values.registrationDate,
-    lastRegistrationDate: values.lastRegistrationDate,
   };
 }
 export default new ProductsDataService();

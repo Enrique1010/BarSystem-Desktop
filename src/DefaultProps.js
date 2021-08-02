@@ -7,6 +7,8 @@ export const INVENTORY_NAME = "Inventario";
 export const USERS_NAME = "Usuarios";
 export const ADD_PRODUCT_NAME = "Nuevo Producto";
 
+export const LOGIN_EMAIL = "11.11live.drink@admin.com";
+
 const pad = (number) => {
   if (number < 10) {
     return "0" + number;

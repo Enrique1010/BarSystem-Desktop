@@ -221,9 +221,9 @@ const UsersComponent = () => {
     message.info(`El Usuario ${name} ahora tiene el rol de ${role}`);
   };
 
-  const registerUser = () => {
-    history.push(ROUTE_REGISTER_USER);
-  };
+  // const registerUser = () => {
+  //   history.push(ROUTE_REGISTER_USER);
+  // };
 
   return (
     <CustomLayout>
@@ -231,11 +231,11 @@ const UsersComponent = () => {
         ghost={false}
         title={APP_NAME}
         subTitle={INVENTORY_NAME}
-        extra={[
-          <Button key="1" type="primary" onClick={registerUser}>
-            Registrar Usuario
-          </Button>,
-        ]}
+        // extra={[
+        //   <Button key="1" type="primary" onClick={registerUser}>
+        //     Registrar Usuario
+        //   </Button>,
+        // ]}
       ></PageHeader>
       <CustomContent>
         {FilterByNameInput}

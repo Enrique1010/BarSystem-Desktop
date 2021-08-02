@@ -3,8 +3,13 @@ import { Input, PageHeader } from "antd";
 import { CustomContent, CustomLayout } from "../navigation/AppLayout";
 import { ORDER_LIST, APP_NAME } from "../../DefaultProps";
 import OrdersDataService from "../services/Orders.service";
-import { buildOrderObjectWithProductFormatted, displayDate } from "./OrderComponent";
+import {
+  buildOrderObject,
+  displayDate,
+} from "./OrderComponent";
 import { PTable } from "../Products/ProductComponent";
+import Text from "antd/lib/typography/Text";
+
 
 const columns = [
   {
@@ -16,7 +21,7 @@ const columns = [
     title: "Fecha",
     dataIndex: "date",
     key: "date",
-    return: (v) => displayDate(v)
+    return: (v) => displayDate(v),
   },
   {
     title: "Productos",
@@ -61,7 +66,19 @@ const OrderList = () => {
     let current = [];
 
     items.forEach((item) => {
-      let val = buildOrderObjectWithProductFormatted(item);
+      let val = buildOrderObject(item);
+      val.products = (
+        <p>
+          {val.products.map((prod, index) => (
+            <>
+              <Text>
+                {index + 1}- {prod.name} ${prod.price}x{prod.amount}
+              </Text>
+              <br />
+            </>
+          ))}
+        </p>
+      );
       current.push(val);
     });
     setOrders(current);

@@ -68,7 +68,6 @@ export const buildProductObject = (item) => {
     olderSupply: data.olderSupply,
     quantitySold: data.quantitySold,
     registrationDate: data.registrationDate,
-    lastRegistrationDate: data.lastRegistrationDate,
   };
 };
 

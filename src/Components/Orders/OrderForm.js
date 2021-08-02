@@ -79,8 +79,8 @@ const OrderForm = () => {
       randomNumber;
     values["id"] = values.orderNumber;
     values["waiterName"] = waiter.name;
-    values["ice"] = !!values.ice ? values.ice : false;
-    values["cups"] = !!values.cups ? values.cups : false;
+    values["ice"] = true;
+    values["cups"] = true;
     values["clientName"] = "Cliente" + values.orderNumber;
     console.log(values);
     let newOrder = buildOrderWithoutDataObject(values);
@@ -150,11 +150,11 @@ const OrderForm = () => {
     setSelectedProduct("");
     setAmount(0);
   };
-  
+
   // const getTable = (
   //   <Table columns={columns} dataSource={!!orderProducts? orderProducts : []}></Table>
   // );
-  
+
   return (
     <CustomLayout>
       <PageHeader
@@ -175,20 +175,6 @@ const OrderForm = () => {
           name="addOrderForm"
           onFinish={onFinishForm}
         >
-          {/* <Form.Item
-            name="clientName"
-            label="Cliente"
-            rules={[
-              {
-                required: true,
-                message: "Debe Introducir el nombre del cliente.",
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-           */}
-
           <Form.Item name="uid" label="Usuario">
             <Select
               showSearch
@@ -215,15 +201,6 @@ const OrderForm = () => {
           >
             <InputNumber min={0} style={{ minWidth: 150 }} />
           </Form.Item>
-          <div style={{display: 'flex'}}>
-            <Form.Item name="cups" label="Vasos">
-              <Switch />
-            </Form.Item>
-
-            <Form.Item name="ice" label="Hielo">
-              <Switch />
-            </Form.Item>
-          </div>
 
           <Divider />
 
