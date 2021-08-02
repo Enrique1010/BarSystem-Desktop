@@ -9,6 +9,7 @@ function createWindow() {
     width: 800,
     height: 600,
     show: false,
+    center: true,
     webPreferences: {
       nodeIntegration: true,
       nativeWindowOpen: true,
@@ -21,7 +22,7 @@ function createWindow() {
     : `file://${path.join(__dirname, "../build/index.html")}`;
 
   mainWindow.loadURL(startURL, {userAgent: 'Chrome'});
-
+  mainWindow.setMenu(null);
   mainWindow.once("ready-to-show", () => mainWindow.show());
   mainWindow.on("closed", () => {
     app.quit;
