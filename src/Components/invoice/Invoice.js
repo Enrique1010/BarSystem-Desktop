@@ -237,9 +237,9 @@ export const StyledInvoice = styled.div`
 `;
 
 export const RawInvoiceStyle = `
-    padding: 2mm;
+    padding: 0mm;
     margin: 0 auto;
-    width: 80mm;
+    width: 72mm;
     background: #fff;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     font-size: 36px;`;
