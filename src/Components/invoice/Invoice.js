@@ -32,8 +32,7 @@ const Invoice = (props) => {
   const { order, products, total } = props;
 
   return (
-    <div id="OrderInvoice">
-      <StyledInvoice>
+      <StyledInvoice id="OrderInvoice">
         <center id="top">
           <div class="logo"></div>
           <div class="info">
@@ -135,7 +134,6 @@ const Invoice = (props) => {
           </div>
         </div>
       </StyledInvoice>
-    </div>
   );
 };
 
@@ -144,7 +142,7 @@ export default Invoice;
 export const StyledInvoice = styled.div`
   padding: 0;
   margin: 0;
-  width: 80mm;
+  width: 72mm;
   background: #fff;
   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
