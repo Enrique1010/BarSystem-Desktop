@@ -183,7 +183,7 @@ const OrderComponent = () => {
       let newProd = products.find((x) => x.productCode === prod.productCode);
       newProd["supply"] = newProd.supply - prod.amount;
       newProd["quantitySold"] = newProd.quantitySold + prod.amount;
-      ProductsDataService.update(newProd.id, newProd);
+      ProductsDataService.update(newProd.productCode, newProd);
     });
   };
 

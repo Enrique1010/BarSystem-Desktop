@@ -217,7 +217,6 @@ const UsersComponent = () => {
         let val = buildOrderObject(item);
         currentOrders.push(val);
       });
-      console.log("watf", currentOrders);
       setOrders(currentOrders);
     }
   };
@@ -230,7 +229,6 @@ const UsersComponent = () => {
   const updateCurrentUserRole = (e) => {
     let newElement = e;
     newElement["role"] = newRole;
-    console.log(e);
     UsersService.update(newElement.uid, newElement);
     showUpdateInfo(newElement.userName, newElement.role);
     setNewUser(undefined);

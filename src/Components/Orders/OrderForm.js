@@ -81,7 +81,6 @@ const OrderForm = () => {
     values["waiterName"] = waiter.name;
     values["creditCard"] = values.creditCard;
     values["clientName"] = "Cliente" + values.orderNumber;
-    console.log(values);
     let newOrder = buildOrderWithoutDataObject(values);
     OrdersService.create(newOrder);
     openNotification(newOrder.orderNumber);
@@ -108,7 +107,6 @@ const OrderForm = () => {
         setSelectedProduct("");
         setAmount(0);
         openProductNotification(smallProd.name);
-        console.log(orderProducts);
       } else {
         openNotProductsAddedNotification();
       }

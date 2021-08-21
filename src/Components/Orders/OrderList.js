@@ -40,7 +40,6 @@ const OrderList = () => {
   useEffect(() => {
     OrdersDataService.getAll().onSnapshot(onDataChange);
     OrdersDataService.getAllCompleted(getLocalDateShort()).onSnapshot((items) => {
-      console.log("itemss:", items.size);
       setDailyOrders(items.size);
     });
   }, []);
