@@ -149,11 +149,7 @@ const OpenOrderComponent = () => {
                   <p>Mesa: {order.table}</p>
                   <p>Fecha: {displayDate(order.date)}</p>
                   <p>
-                    <Text type="success">Hielo: {order.ice ? "Si" : "No"}</Text>{" "}
-                    <br />
-                    <Text type="success">
-                      Vasos: {order.cups ? "Si" : "No"}
-                    </Text>{" "}
+                    <Text type="success">Tarjeta: {order.creditCard ? "Si" : "No"}</Text>
                     <br />
                     <Text type="success">Mesero: {order.waiterName}</Text>
                   </p>

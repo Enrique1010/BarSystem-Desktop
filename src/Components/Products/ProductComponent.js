@@ -159,7 +159,6 @@ const ProductComponent = () => {
 
   const updateCurrentElementSupply = () => {
     if (!!newProduct) {
-      console.log(newProduct, " aSD ", price, newName);
       var newElement = newProduct;
       if (!!newSupply) {
         newElement.newSupply = newSupply;

@@ -79,10 +79,8 @@ const OrderForm = () => {
       randomNumber;
     values["id"] = values.orderNumber;
     values["waiterName"] = waiter.name;
-    values["ice"] = true;
-    values["cups"] = true;
+    values["creditCard"] = values.creditCard;
     values["clientName"] = "Cliente" + values.orderNumber;
-    console.log(values);
     let newOrder = buildOrderWithoutDataObject(values);
     OrdersService.create(newOrder);
     openNotification(newOrder.orderNumber);
@@ -109,7 +107,6 @@ const OrderForm = () => {
         setSelectedProduct("");
         setAmount(0);
         openProductNotification(smallProd.name);
-        console.log(orderProducts);
       } else {
         openNotProductsAddedNotification();
       }
@@ -237,6 +234,11 @@ const OrderForm = () => {
           </Button>
 
           <Divider />
+
+          <Form.Item name="creditCard" label="Pago con Tarjeta">
+            <Switch />
+          </Form.Item>
+
           <Button
             type="primary"
             htmlType="submit"

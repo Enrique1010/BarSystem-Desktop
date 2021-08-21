@@ -60,7 +60,6 @@ const AppLayout = () => {
                 const foundRole = roles.docs
                   .find((r) => r.data().role === usr.data().role)
                   .data();
-                console.log("Aparecio ", foundRole);
                 setUserRolesForbiddenActions(foundRole.forbidden);
                 setIsSignedIn(true);
               }
@@ -87,7 +86,6 @@ const AppLayout = () => {
         .auth()
         .signInWithEmailAndPassword(LOGIN_EMAIL, values.password)
         .then((userCredential) => {
-          console.log(userCredential);
           setCurrentUser(userCredential.user);
         })
         .catch((error) => {

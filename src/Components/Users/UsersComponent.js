@@ -12,13 +12,14 @@ import Modal from "antd/lib/modal/Modal";
 import { Option } from "antd/lib/mentions";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { APP_NAME, INVENTORY_NAME } from "../../DefaultProps";
+import { APP_NAME, getLocalDateShort, INVENTORY_NAME } from "../../DefaultProps";
 import { CustomContent, CustomLayout } from "../navigation/AppLayout";
 import UsersService from "../services/Users.service";
 import { parseRole } from "./users.config";
-import { displayDate } from "../Orders/OrderComponent";
+import { buildOrderObject, displayDate } from "../Orders/OrderComponent";
 import { ROUTE_REGISTER_USER } from "../navigation/Routes";
 import { useHistory } from "react-router-dom";
+import OrdersService from "../services/Orders.service";
 
 export const PTable = styled(Table)`
   padding: 20px;
@@ -49,6 +50,11 @@ const columns = [
     key: "role",
     render: (record) => <span>{parseRole(record)}</span>,
   },
+  {
+    title: "Ord. Diarias",
+    dataIndex: "dailyOrders",
+    key: "dailyOrders",
+  },
 ];
 
 // Build User Object from firestore collection item
@@ -74,6 +80,7 @@ export const buildRoleObject = (item) => {
 const UsersComponent = () => {
   const [users, setUsers] = useState([]);
   const [roles, setRoles] = useState([]);
+  const [orders, setOrders] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [nameFilter, setNameFilter] = useState("");
   const [newRole, setNewRole] = useState("disabled");
@@ -167,9 +174,14 @@ const UsersComponent = () => {
   };
 
   useEffect(() => {
-    UsersService.getAll().orderBy("userName", "asc").onSnapshot(onDataChange);
-    UsersService.getAllRoles().onSnapshot(onRolesDataChange);
+    OrdersService.getAllCompleted(getLocalDateShort()).onSnapshot(onOrdersDataChange);
   }, []);
+
+  useEffect(() => {
+    UsersService.getAll().orderBy("userName", "asc").onSnapshot(onDataChange);
+    UsersService.getAll().onSnapshot(onRolesDataChange);
+  }, [orders]);
+
 
   useEffect(() => {
     if (!!newUser) {
@@ -181,6 +193,7 @@ const UsersComponent = () => {
     let current = [];
     items.forEach((item) => {
       let val = buildUserObject(item);
+      val["dailyOrders"] = countOrdersByUser(val);
       current.push(val);
     });
     setUsers(current);
@@ -195,6 +208,19 @@ const UsersComponent = () => {
     setRoles(current);
   };
 
+  const onOrdersDataChange = (items) => {
+    if (!!items) {
+      let currentOrders = [];
+
+      items.forEach((item) => {
+        // Parse to Order
+        let val = buildOrderObject(item);
+        currentOrders.push(val);
+      });
+      setOrders(currentOrders);
+    }
+  };
+
   const showEditModal = (e) => {
     setNewUser(e);
     modal.info(EditUserConfig(e));
@@ -203,10 +229,14 @@ const UsersComponent = () => {
   const updateCurrentUserRole = (e) => {
     let newElement = e;
     newElement["role"] = newRole;
-    console.log(e);
     UsersService.update(newElement.uid, newElement);
     showUpdateInfo(newElement.userName, newElement.role);
     setNewUser(undefined);
+  };
+
+  const countOrdersByUser = (usr) => {
+    let ords = orders.filter((o) => o.uid === usr.uid);
+    return !!ords.length ? ords.length : 0;
   };
 
   const onEdit = (element) => {

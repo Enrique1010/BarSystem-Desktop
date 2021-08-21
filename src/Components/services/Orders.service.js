@@ -14,8 +14,14 @@ class OrdersDataService {
     .where("openOrder", "==", false)
     .orderBy("date", "asc");
   }
+
+  getAllCompleted(date) {
+    return db
+    .where("currentState", "==", true)
+    .orderBy("date").startAt(date);
+  }
   
-  getAllStaticUsers() {
+  getAllState() {
     return db2;
   }
 
