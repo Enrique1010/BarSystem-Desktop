@@ -215,11 +215,7 @@ const OrderComponent = () => {
                   <p>Mesa: {order.table}</p>
                   <p>Fecha: {displayDate(order.date)}</p>
                   <p>
-                    <Text type="success">Hielo: {order.ice ? "Si" : "No"}</Text>{" "}
-                    <br />
-                    <Text type="success">
-                      Vasos: {order.cups ? "Si" : "No"}
-                    </Text>
+                    <Text type="success">Tarjeta: {order.creditCard ? "Si" : "No"}</Text>
                     <br />
                     <Text type="success">Mesero: {order.waiterName}</Text>
                   </p>
@@ -293,8 +289,6 @@ export const buildOrderObject = (item) => {
     date: data.date,
     products: data.products,
     table: data.table,
-    cups: data.cups,
-    ice: data.ice,
     uid: data.uid,
     waiterName: data.waiterName,
     creditCard: data.creditCard,
@@ -311,8 +305,6 @@ export const buildOrderWithoutDataObject = (data) => {
     date: data.date,
     products: data.products,
     table: data.table,
-    cups: data.cups,
-    ice: data.ice,
     uid: data.uid,
     waiterName: data.waiterName,
     creditCard: data.creditCard,
@@ -330,8 +322,6 @@ export const buildOrderObjectWithProductFormatted = (item) => {
     date: data.date,
     products: data.products.length,
     table: data.table,
-    cups: data.cups,
-    ice: data.ice,
     uid: data.uid,
     waiterName: data.waiterName,
     creditCard: data.creditCard,

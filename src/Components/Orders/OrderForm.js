@@ -79,8 +79,6 @@ const OrderForm = () => {
       randomNumber;
     values["id"] = values.orderNumber;
     values["waiterName"] = waiter.name;
-    values["ice"] = true;
-    values["cups"] = true;
     values["creditCard"] = values.creditCard;
     values["clientName"] = "Cliente" + values.orderNumber;
     console.log(values);
