@@ -81,6 +81,7 @@ const OrderForm = () => {
     values["waiterName"] = waiter.name;
     values["ice"] = true;
     values["cups"] = true;
+    values["creditCard"] = values.creditCard;
     values["clientName"] = "Cliente" + values.orderNumber;
     console.log(values);
     let newOrder = buildOrderWithoutDataObject(values);
@@ -237,6 +238,11 @@ const OrderForm = () => {
           </Button>
 
           <Divider />
+
+          <Form.Item name="creditCard" label="Pago con Tarjeta">
+            <Switch />
+          </Form.Item>
+
           <Button
             type="primary"
             htmlType="submit"

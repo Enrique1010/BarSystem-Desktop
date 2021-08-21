@@ -1,15 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Input, PageHeader } from "antd";
 import { CustomContent, CustomLayout } from "../navigation/AppLayout";
-import { ORDER_LIST, APP_NAME } from "../../DefaultProps";
+import { ORDER_LIST, APP_NAME, getLocalDate, getLocalDateShort } from "../../DefaultProps";
 import OrdersDataService from "../services/Orders.service";
-import {
-  buildOrderObject,
-  displayDate,
-} from "./OrderComponent";
+import { buildOrderObject, displayDate } from "./OrderComponent";
 import { PTable } from "../Products/ProductComponent";
 import Text from "antd/lib/typography/Text";
-
 
 const columns = [
   {
@@ -39,8 +35,14 @@ const OrderList = () => {
   const [orders, setOrders] = useState([]);
   const [nameFilter, setNameFilter] = useState("");
   const [filteredOrders, setFilteredOrders] = useState([]);
+  const [dailyOrders, setDailyOrders] = useState(0);
+
   useEffect(() => {
     OrdersDataService.getAll().onSnapshot(onDataChange);
+    OrdersDataService.getAllCompleted(getLocalDateShort()).onSnapshot((items) => {
+      console.log("itemss:", items.size);
+      setDailyOrders(items.size);
+    });
   }, []);
 
   const FilterByNameInput = (
@@ -92,6 +94,7 @@ const OrderList = () => {
         subTitle={ORDER_LIST}
       ></PageHeader>
       <CustomContent>
+        {!!dailyOrders > 0 ? (<h1>Ordenes de Hoy: {dailyOrders}</h1>) : (<></>)}
         {FilterByNameInput}
         <PTable
           dataSource={

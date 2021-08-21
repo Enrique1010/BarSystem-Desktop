@@ -30,80 +30,110 @@ export const InvoiceElement = (order) => {
 
 const Invoice = (props) => {
   const { order, products, total } = props;
+  const itbis = total * 0.18;
 
   return (
-      <StyledInvoice id="OrderInvoice">
-        <center id="top">
-          <div class="logo"></div>
-          <div class="info">
-            <h2 style={{ fontSize: "32px", fontWeight: 700 }}>11:11</h2>
-            <h2 style={{ fontSize: "32px", fontWeight: 700 }}>
-              Live {"&"} Drink
-            </h2>
-          </div>
-        </center>
-
-        <div id="mid">
-          <div class="info">
-            <h2 style={{ fontSize: "20px", fontWeight: 400 }}>Contacto</h2>
-            <p style={{ fontSize: "18px", fontWeight: 250 }}>
-              Email : 11.11live.drink@gmail.com
-              <br />
-            </p>
-            <br />
-            <h2 style={{ fontSize: "20px", fontWeight: 400 }}>
-              Orden #{order.id}
-            </h2>
-            <h2 style={{ fontSize: "20px", fontWeight: 250 }}>
-              Mesa #{order.table}
-            </h2>
-          </div>
+    <StyledInvoice id="OrderInvoice">
+      <center id="top">
+        <div class="logo"></div>
+        <div class="info">
+          <h2 style={{ fontSize: "32px", fontWeight: 700 }}>11:11</h2>
+          <h2 style={{ fontSize: "32px", fontWeight: 700 }}>
+            Live {"&"} Drink
+          </h2>
         </div>
+      </center>
 
-        <div id="bot">
-          <div id="table">
-            <table width="100%">
+      <div id="mid">
+        <div class="info">
+          <h2 style={{ fontSize: "20px", fontWeight: 400 }}>Contacto</h2>
+          <p style={{ fontSize: "18px", fontWeight: 250 }}>
+            Email : 11.11live.drink@gmail.com
+            <br />
+          </p>
+          <br />
+          <h2 style={{ fontSize: "20px", fontWeight: 400 }}>
+            Orden #{order.id}
+          </h2>
+          <h2 style={{ fontSize: "20px", fontWeight: 250 }}>
+            Mesa #{order.table}
+          </h2>
+        </div>
+      </div>
+
+      <div id="bot">
+        <div id="table">
+          <table width="100%">
+            <tr class="tabletitle">
+              <td class="item">
+                <h2
+                  style={{
+                    fontSize: "20px",
+                    fontWeight: 250,
+                    lineHeight: "2em",
+                  }}
+                >
+                  <bold>Producto</bold>
+                </h2>
+              </td>
+              <td class="Hours">
+                <h2
+                  style={{
+                    fontSize: "20px",
+                    fontWeight: 250,
+                    lineHeight: "2em",
+                  }}
+                >
+                  <bold>Cantidad</bold>
+                </h2>
+              </td>
+              <td class="Rate">
+                <h2
+                  style={{
+                    fontSize: "20px",
+                    fontWeight: 250,
+                    lineHeight: "2em",
+                  }}
+                >
+                  <bold>Sub Total</bold>
+                </h2>
+              </td>
+            </tr>
+
+            {/* Here will be the Items */}
+            {products}
+
+            {!!order.creditCard ? (
+              <>
+                <tr class="tabletitle">
+                  <td class="Rate">
+                    <h2 style={{ fontSize: "20px", fontWeight: 400 }}>ITBIS</h2>
+                  </td>
+                  <td class="payment">
+                    <h2 style={{ fontSize: "20px", fontWeight: 400 }}>
+                      RD$
+                      {`${itbis}`.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")}
+                    </h2>
+                  </td>
+                </tr>
+
+                <tr class="tabletitle">
+                  <td class="Rate">
+                    <h2 style={{ fontSize: "20px", fontWeight: 400 }}>Total</h2>
+                  </td>
+                  <td class="payment">
+                    <h2 style={{ fontSize: "20px", fontWeight: 400 }}>
+                      RD$
+                      {`${total + itbis}`.replace(
+                        /(\d)(?=(\d{3})+(?!\d))/g,
+                        "$1,"
+                      )}
+                    </h2>
+                  </td>
+                </tr>
+              </>
+            ) : (
               <tr class="tabletitle">
-                <td class="item">
-                  <h2
-                    style={{
-                      fontSize: "20px",
-                      fontWeight: 250,
-                      lineHeight: "2em",
-                    }}
-                  >
-                    <bold>Producto</bold>
-                  </h2>
-                </td>
-                <td class="Hours">
-                  <h2
-                    style={{
-                      fontSize: "20px",
-                      fontWeight: 250,
-                      lineHeight: "2em",
-                    }}
-                  >
-                    <bold>Cantidad</bold>
-                  </h2>
-                </td>
-                <td class="Rate">
-                  <h2
-                    style={{
-                      fontSize: "20px",
-                      fontWeight: 250,
-                      lineHeight: "2em",
-                    }}
-                  >
-                    <bold>Sub Total</bold>
-                  </h2>
-                </td>
-              </tr>
-
-              {/* Here will be the Items */}
-              {products}
-
-              <tr class="tabletitle">
-                <td></td>
                 <td class="Rate">
                   <h2 style={{ fontSize: "20px", fontWeight: 400 }}>Total</h2>
                 </td>
@@ -113,27 +143,30 @@ const Invoice = (props) => {
                   </h2>
                 </td>
               </tr>
-            </table>
-          </div>
-
-          <div id="legalcopy">
-            <p
-              style={{
-                fontSize: "24px",
-                lineHeight: "2em",
-                textAlign: "center",
-              }}
-              class="legal"
-            >
-              <strong style={{ fontSize: "12px" }}>Atendido por: {order.waiterName}</strong>
-              <br />
-              <strong>¡Gracias por su comprar!</strong>
-              <br />
-              <br />
-            </p>
-          </div>
+            )}
+          </table>
         </div>
-      </StyledInvoice>
+
+        <div id="legalcopy">
+          <p
+            style={{
+              fontSize: "24px",
+              lineHeight: "2em",
+              textAlign: "center",
+            }}
+            class="legal"
+          >
+            <strong style={{ fontSize: "12px" }}>
+              Atendido por: {order.waiterName}
+            </strong>
+            <br />
+            <strong>¡Gracias por su comprar!</strong>
+            <br />
+            <br />
+          </p>
+        </div>
+      </div>
+    </StyledInvoice>
   );
 };
 
@@ -182,14 +215,6 @@ export const StyledInvoice = styled.div`
   #bot {
     min-height: 50px;
   }
-  /* 
-  #top .logo {
-    float: left;
-    height: 60px;
-    width: 60px;
-    background: ${mainLogo} no-repeat;
-    background-size: 60px 60px;
-  } */
 
   .info {
     display: block;

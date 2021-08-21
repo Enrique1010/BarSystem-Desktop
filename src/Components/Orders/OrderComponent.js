@@ -16,6 +16,7 @@ import Text from "antd/lib/typography/Text";
 import Invoice, { InvoiceElement, RawInvoiceStyle } from "../invoice/Invoice";
 import ProductsDataService from "../services/Products.service";
 import { buildProductObject } from "../Products/ProductComponent";
+
 import { ROUTE_ADD_ORDER } from "../navigation/Routes";
 import { useHistory } from "react-router-dom";
 
@@ -63,6 +64,7 @@ export const orderTitle = (number, name) => (
   </span>
 );
 
+// Print Order Invoice
 export const openFrame = () => {
   var divContents = document.getElementById("OrderInvoice").innerHTML;
   var a = window.open("", "", "height=400, width=600");
@@ -165,6 +167,7 @@ const OrderComponent = () => {
     OrdersDataService.delete(order.id);
   };
 
+  // Complete Order
   const nextState = (order) => {
     if (order.currentState === PENDING_STATE) {
       order.currentState = DONE_STATE;
@@ -177,8 +180,6 @@ const OrderComponent = () => {
 
   const calculateOrder = (order) => {
     order.products.forEach((prod) => {
-      console.log('dude wtf?', prod);
-      console.log('dude wtf?', products);
       let newProd = products.find((x) => x.productCode === prod.productCode);
       newProd["supply"] = newProd.supply - prod.amount;
       newProd["quantitySold"] = newProd.quantitySold + prod.amount;
@@ -296,6 +297,7 @@ export const buildOrderObject = (item) => {
     ice: data.ice,
     uid: data.uid,
     waiterName: data.waiterName,
+    creditCard: data.creditCard,
   };
 };
 
@@ -313,6 +315,7 @@ export const buildOrderWithoutDataObject = (data) => {
     ice: data.ice,
     uid: data.uid,
     waiterName: data.waiterName,
+    creditCard: data.creditCard,
   };
 };
 
@@ -331,6 +334,7 @@ export const buildOrderObjectWithProductFormatted = (item) => {
     ice: data.ice,
     uid: data.uid,
     waiterName: data.waiterName,
+    creditCard: data.creditCard,
   };
 };
 

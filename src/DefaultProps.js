@@ -34,3 +34,15 @@ export const getLocalDate = () => {
     (date.getUTCMilliseconds() / 1000).toFixed(3).slice(2, 5)
   );
 };
+
+export const getLocalDateShort = () => {
+  let date = new Date();
+  return (
+    date.getFullYear() +
+    "-" +
+    pad(date.getMonth() + 1) +
+    "-" +
+    pad(date.getDate())
+  );
+};
+
