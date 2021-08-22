@@ -95,7 +95,7 @@ const Invoice = (props) => {
                     lineHeight: "2em",
                   }}
                 >
-                  <bold>Sub Total</bold>
+                  <bold></bold>
                 </h2>
               </td>
             </tr>
