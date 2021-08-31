@@ -79,7 +79,7 @@ const OrderForm = () => {
       randomNumber;
     values["id"] = values.orderNumber;
     values["waiterName"] = waiter.name;
-    values["creditCard"] = values.creditCard;
+    values["creditCard"] = !!values.creditCard ? values.creditCard : false;
     values["clientName"] = "Cliente" + values.orderNumber;
     let newOrder = buildOrderWithoutDataObject(values);
     OrdersService.create(newOrder);
@@ -91,22 +91,40 @@ const OrderForm = () => {
     if (!!selectedProduct && !!amount) {
       let prd = products.find((x) => x.productCode === selectedProduct);
       if (!!prd) {
-        let smallProd = {
-          amount: amount,
-          category: prd.category,
-          productCode: prd.productCode,
-          name: prd.name,
-          price: prd.price,
-          ready: true,
-          supply: prd.supply,
-        };
-        let newPrds = orderProducts;
-        newPrds.push(smallProd);
-        setOrderProducts(newPrds);
-        form.resetFields(["productAmount", "selectedProduct"]);
-        setSelectedProduct("");
-        setAmount(0);
-        openProductNotification(smallProd.name);
+        if (prd.supply >= amount) {
+          // All OK
+          let smallProd = {
+            amount: amount,
+            category: prd.category,
+            productCode: prd.productCode,
+            name: prd.name,
+            price: prd.price,
+            ready: true,
+            supply: prd.supply,
+          };
+
+          let savedPrd = orderProducts.find(
+            (x) => x.productCode === smallProd.productCode
+          );
+          if (!!savedPrd) {
+            if (prd.supply >= savedPrd.amount + smallProd.amount) {
+              orderProducts.push(smallProd);
+              openProductNotification(smallProd.name);
+            } else {
+              openNotProductSupplyNotification();
+            }
+          } else {
+            orderProducts.push(smallProd);
+            openProductNotification(smallProd.name);
+          }
+          ProductsService.getAll().onSnapshot(onDataChange);
+          form.resetFields(["productAmount", "selectedProduct"]);
+          setSelectedProduct("");
+          setAmount(0);
+        } else {
+          //  Supply Less than Amount
+          openNotProductSupplyNotification();
+        }
       } else {
         openNotProductsAddedNotification();
       }
@@ -131,8 +149,16 @@ const OrderForm = () => {
 
   const openNotProductsAddedNotification = () => {
     notification.warning({
-      message: `Producto Agregados:`,
+      message: `Producto No Agregados:`,
       description: `No hay productos agregados`,
+      placement: "bottomRight",
+    });
+  };
+
+  const openNotProductSupplyNotification = () => {
+    notification.warning({
+      message: `Producto No Agregado:`,
+      description: `No quedan suficientes.`,
       placement: "bottomRight",
     });
   };

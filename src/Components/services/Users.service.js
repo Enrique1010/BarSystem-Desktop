@@ -1,7 +1,10 @@
 import firebase from "../../firebase";
 
 const db = firebase.collection("/Users");
+// Production
 const rolesCollection = firebase.collection("/Roles");
+// Develop
+// const rolesCollection = firebase.collection("/Roles_Test");
 
 class UsersService {
   getAll() {

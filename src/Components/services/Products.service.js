@@ -1,6 +1,9 @@
 import firebase from "../../firebase";
 
+// Production
 const db = firebase.collection("/Products");
+// Develop
+// const db = firebase.collection("/Products_Test");
 
 class ProductsDataService {
   getAll() {

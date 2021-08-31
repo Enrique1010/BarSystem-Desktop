@@ -1,7 +1,9 @@
 import firebase from "../../firebase";
 
+// Production
 const db = firebase.collection("/Orders");
-const db2 = firebase.collection("/StaticUsers");
+// Develop
+// const db = firebase.collection("/Orders_Test");
 
 class OrdersDataService {
   getAll() {
@@ -15,14 +17,17 @@ class OrdersDataService {
     .orderBy("date", "asc");
   }
 
-  getAllCompleted(date) {
+  // Fetch all Completed Orders
+  getAllCompleted() {
+    return db
+    .where("currentState", "==", true);
+  }
+  
+  // Fetch all Completed Orders by date
+  getAllCompletedByDate(date) {
     return db
     .where("currentState", "==", true)
     .orderBy("date").startAt(date);
-  }
-  
-  getAllState() {
-    return db2;
   }
 
   getOpen() {

@@ -174,7 +174,7 @@ const UsersComponent = () => {
   };
 
   useEffect(() => {
-    OrdersService.getAllCompleted(getLocalDateShort()).onSnapshot(onOrdersDataChange);
+    OrdersService.getAllCompleted().onSnapshot(onOrdersDataChange);
   }, []);
 
   useEffect(() => {
