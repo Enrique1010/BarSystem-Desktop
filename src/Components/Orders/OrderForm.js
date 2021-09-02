@@ -10,7 +10,7 @@ import {
   Switch,
 } from "antd";
 import { CustomContent, CustomLayout } from "../navigation/AppLayout";
-import { ADD_PRODUCT_NAME, APP_NAME, getLocalDate } from "../../DefaultProps";
+import { ADD_PRODUCT_NAME, APP_NAME, getLocalDate, getOrderNumber } from "../../DefaultProps";
 import { useHistory } from "react-router";
 import { ROUTE_ORDERS } from "../navigation/Routes";
 import OrdersService from "../services/Orders.service";
@@ -69,14 +69,7 @@ const OrderForm = () => {
     values["products"] = orderProducts;
     values["openOrder"] = false;
     values["currentState"] = false;
-    values["orderNumber"] =
-      dateInstance.getDay() +
-      "" +
-      dateInstance.getMonth() +
-      "" +
-      dateInstance.getFullYear() +
-      "" +
-      randomNumber;
+    values["orderNumber"] = getOrderNumber() +randomNumber;
     values["id"] = values.orderNumber;
     values["waiterName"] = waiter.name;
     values["creditCard"] = !!values.creditCard ? values.creditCard : false;
